@@ -3,9 +3,10 @@
 <title>Pets</title>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="CSS/Main.css">
+<link rel="stylesheet" href="CSS/font.css">
+<link rel="stylesheet" type="text/css" href="CSS/font-awesome-4.7.0/css/font-awesome.min.css">
+<script src="Javascript/MainJS.js"></script>
 <style>
 html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 </style>
@@ -60,22 +61,31 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
     <ul class="w3-ul w3-card-3 w3-white">
       <li class="w3-padding-16">
         <img src="images/animal1.png" class="w3-left w3-circle w3-margin-right" style="width:35px">
-        <span class="w3-xlarge">Orc</span><br>
+        <span class="w3-xlarge">Trump</span><br>
         <br>
         <!-- Accordion -->
         <div class="w3-card w3-round w3-row-padding w3-margin-bottom">
           <div class="w3-white">
-            <button onclick="accord('1general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i> General</button>
+            <button onclick="accord('1general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i><strong> General</strong></button>
             <div id="1general" class="w3-hide w3-container">
-              <p>Some text..</p>
+              <p>Age: 3 years</p>
+              <p>Sex: Unknown</p>
+              <p>Weight: 135 lbs</p>
+              <p>Height: 64"</p>
             </div>
-            <button onclick="accord('1vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i> Vaccines</button>
+            <button onclick="accord('1vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i><strong> Vaccines</strong></button>
             <div id="1vacc" class="w3-hide w3-container">
-              <p>Some other text..</p>
+              <p>Rabies Vaccine: 11/17/1995</p>
+              <p>Booster Shots: 12/12/1212</p>
             </div>
-            <button onclick="accord('1xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i> X-Rays</button>
+            <button onclick="accord('1xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i><strong> X-Rays</strong></button>
             <div id="1xray" class="w3-hide w3-container">
-              <p>more text</p>
+              <br>
+              <object data="images/xray_pdf.pdf" type="application/pdf" width="100%" height="500px">
+   <p><b>Example fallback content</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/pdf/sample-3pp.pdf">Download PDF</a>.</p>
+</object>
+<br>
+              <br>
             </div>
           </div>      
         </div>
@@ -83,20 +93,20 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
       <li class="w3-padding-16">
         <img src="images/animal2.gif" class="w3-left w3-circle w3-margin-right" style="width:35px">
-        <span class="w3-xlarge">Trump</span><br>
+        <span class="w3-xlarge">Orc</span><br>
         <br>
         <!-- Accordion -->
         <div class="w3-card w3-round w3-row-padding w3-margin-bottom">
           <div class="w3-white">
-            <button onclick="accord('2general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i> General</button>
+            <button onclick="accord('2general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i><strong> General</strong></button>
             <div id="2general" class="w3-hide w3-container">
               <p>Some text..</p>
             </div>
-            <button onclick="accord('2vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i> Vaccines</button>
+            <button onclick="accord('2vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i><strong> Vaccines</strong></button>
             <div id="2vacc" class="w3-hide w3-container">
               <p>Some other text..</p>
             </div>
-            <button onclick="accord('2xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i> X-Rays</button>
+            <button onclick="accord('2xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i><strong> X-Rays</strong></button>
             <div id="2xray" class="w3-hide w3-container">
               <p>more text</p>
             </div>
@@ -111,15 +121,15 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
         <!-- Accordion -->
         <div class="w3-card w3-round w3-row-padding w3-margin-bottom">
           <div class="w3-white">
-            <button onclick="accord('3general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i> General</button>
+            <button onclick="accord('3general')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-heartbeat fa-fw w3-margin-right"></i><strong> General</strong></button>
             <div id="3general" class="w3-hide w3-container">
               <p>Some text..</p>
             </div>
-            <button onclick="accord('3vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i> Vaccines</button>
+            <button onclick="accord('3vacc')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-shield fa-fw w3-margin-right"></i><strong> Vaccines</strong></button>
             <div id="3vacc" class="w3-hide w3-container">
               <p>Some other text..</p>
             </div>
-            <button onclick="accord('3xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i> X-Rays</button>
+            <button onclick="accord('3xray')" class="w3-button w3-block w3-theme-l1 w3-left-align"><i class="fa fa-plus-square fa-fw w3-margin-right"></i><strong> X-Rays</strong></button>
             <div id="3xray" class="w3-hide w3-container">
               <p>more text</p>
             </div>
@@ -158,54 +168,5 @@ html,body,h1,h2,h3,h4,h5 {font-family: "Raleway", sans-serif}
 
   <!-- End page content -->
 </div>
-
-<script>
-// Get the Sidebar
-var mySidebar = document.getElementById("mySidebar");
-
-// Get the DIV with overlay effect
-var overlayBg = document.getElementById("myOverlay");
-
-// Toggle between showing and hiding the sidebar, and add overlay effect
-function w3_open() {
-    if (mySidebar.style.display === 'block') {
-        mySidebar.style.display = 'none';
-        overlayBg.style.display = "none";
-    } else {
-        mySidebar.style.display = 'block';
-        overlayBg.style.display = "block";
-    }
-}
-
-// Close the sidebar with the close button
-function w3_close() {
-    mySidebar.style.display = "none";
-    overlayBg.style.display = "none";
-}
-
-// Accordion
-function accord(id) {
-    var x = document.getElementById(id);
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-        x.previousElementSibling.className += " w3-theme-d1";
-    } else { 
-        x.className = x.className.replace("w3-show", "");
-        x.previousElementSibling.className = 
-        x.previousElementSibling.className.replace(" w3-theme-d1", "");
-    }
-}
-
-// Used to toggle the menu on smaller screens when clicking on the menu button
-function openNav() {
-    var x = document.getElementById("navDemo");
-    if (x.className.indexOf("w3-show") == -1) {
-        x.className += " w3-show";
-    } else { 
-        x.className = x.className.replace(" w3-show", "");
-    }
-}
-</script>
-
 </body>
 </html>
