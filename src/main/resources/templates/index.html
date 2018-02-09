@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+        xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link th:href="@{/static/css/style.css}" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.0.0/dist/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <title>VetChain</title>
+</head>
+<body class="bg-faded">
+        <!-- Nav Bar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+        <!-- Toggle button -->
+        <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <a class="navbar-brand" href="#"><img class="img-fluid rounded-circle" width="40px" height="40px" alt="VetChain" th:src="@{/static/images/Logo.png}"/></a>
+        <!-- Toggle content
+        <div class="collapse navbar-collapse">
+            <!--
+            <ul class="navbar-nav mr-auto mt-2 mt-md-0">
+                <li class="nav-item active">
+                    <a class="nav-link" href="#"> <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Link</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link disabled" href="#">Disabled</a>
+                </li>
+            </ul>-->
+        <form class="form-inline my-2 my-lg-0 ml-auto">
+            <input class="form-control mr-sm-2" type="text" placeholder="Search">
+            <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </nav>
+    <!-- End NavBar -->
+
+<!-- !PAGE CONTENT! -->
+<div class="container-fluid">
+    <div class="mx-auto w-25 pt-lg-5 pt-sm-5 pt-xl-5 pt-md-5 pt-5">
+        <h1 class="text-center">VetChain</h1>
+        <p class="text-center">We do stuff with animals and blockchains.</p>
+        <div class="form p-3 p-sm-3 p-lg-3 p-xl-3 p-md-3 rounded">
+            <div class="register-form">
+                <h2 class="pb-3">Register</h2>
+                <form th:object="${regInfo}" th:action="@{/register}" method="post">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="username-addon-reg" aria-hidden="true"><i class="fa fa-user-o"></i></span>
+                        </div>
+                        <input type="text" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-reg" required/>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="password-addon-reg" aria-hidden="true"><i class="fa fa-key"></i></span>
+                        </div>
+                        <input type="password" th:field="*{password}" class="form-control" placeholder="New Password" aria-label="Password" aria-describedby="password-addon-reg" required/>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="email-addon-reg" aria-hidden="true"><i class="fa fa-envelope"></i></span>
+                        </div>
+                        <input type="email" th:field="*{email}" class="form-control" placeholder="Email" aria-label="Email" aria-describedby="email-addon-reg" required/>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="phone-addon-reg" aria-hidden="true"><i class="fa fa-phone"></i></span>
+                        </div>
+                        <input type="tel" th:field="*{phone}" class="form-control" placeholder="Phone Number" aria-label="Phone Number" aria-describedby="phone-addon-reg" required/>
+                    </div>
+                    <button class="rounded" type="submit">create</button>
+                    <p class="pt-2">Already registered? <a class="message" href="#">Sign In</a></p>
+                </form>
+            </div>
+            <div class="login-form">
+                <h2 class="pb-3">Login</h2>
+                <form th:object="${loginInfo}" th:action="@{/login}" method="post">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="username-addon-log" aria-hidden="true"><i class="fa fa-user-o"></i></span>
+                        </div>
+                        <input type="text" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-log" required/>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="password-addon-log" aria-hidden="true"><i class="fa fa-key"></i></span>
+                        </div>
+                        <input type="password" th:field="*{password}" class="form-control" placeholder="Password" aria-label="Password" aria-describedby="password-addon-log" required/>
+                    </div>
+                    <button class="rounded" type="submit">login</button>
+                    <p class="pt-2">Not registered? <a class="message" href="#">Create an account</a></p>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <br>
+    <div class="container-fluid bg-dark text-white pt-lg-3 pt-xl-3 pt-md-3 pt-3 pt-sm-3">
+        <div class="row">
+            <div class="col">
+                <h5>Contact Us</h5>
+                <hr class="bottom_bar_green">
+                <p>Email</p>
+                <p>Facebook</p>
+                <p>LinkedIn</p>
+            </div>
+            <div class="col">
+                <h5>About Us</h5>
+                <hr class="bottom_bar_red">
+                <p>Starving College Kids</p>
+                <p>Our Personal Websites</p>
+                <p>We wear clean underwear</p>
+            </div>
+            <div class="col">
+                <h5>Our Supporters</h5>
+                <hr class="bottom_bar_orange">
+                <p>Exxon</p>
+                <p>The Trump Foundation</p>
+                <p>7 Penguins</p>
+                <p>Brendan Fraiser</p>
+            </div>
+        </div>
+    </div>
+    <!-- End page content -->
+</div>
+<script language="JavaScript" type="text/javascript" th:src="@{/webjars/popper.js/1.12.9/dist/popper.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0/dist/js/bootstrap.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/webjars/jquery/3.2.1/dist/jquery.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/login_register_toggle.js}"></script>
+</body>
+</html>

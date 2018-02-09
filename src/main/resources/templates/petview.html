@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Client Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/petview.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<!-- Sidebar/menu -->
+<div class="nav-side-menu">
+    <div class="brand">
+        <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
+        <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
+        <hr class="border border-success bg-sucess">
+    </div>
+    <i class="fa fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fa fa-github-alt"></i></span> Pets</a>
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/doctors(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-user-md"></i></span> Doctor</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-newspaper-o"></i></span> News</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-cog"></i></span> Settings</a>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<div class="container-fluid pl-4" id="main">
+    <!-- Overview header -->
+    <div class="row pt-1">
+        <div class="container fluid">
+            <h5><b><i class="fa fa-paw"></i> My Pets</b></h5>
+            <hr class="border border-success bg-success">
+        </div>
+    </div>
+    <div class="row pt-1" th:if="${userInfo.getPets().isEmpty()}">
+        <div class="container-fluid">
+            <div class="w-50 mx-auto text-center"><h5>You don't have any pet right now</h5></div>
+            <div class="w-50 mx-auto text-center">
+                <button class="btn btn-lg btn-success" data-toggle="modal" data-target="#addPetModal">Add Pet</button>
+            </div>
+            <!--- Add pet modal --->
+            <div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <form class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/addPet}" method="post" enctype="multipart/form-data">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addPetModalLabel">Add Pet</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="container">
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="petName">Name</span>
+                                    </div>
+                                    <input class="form-control" type="text" name="name" placeholder="Pet's Name" aria-describedby="petName">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="petSpecies">Species</span>
+                                    </div>
+                                    <input class="form-control" name="species" type="text" placeholder="Species" aria-describedby="petSpecies">
+                                </div>
+
+                                <div class="input-group mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text" id="petAge">Age</span>
+                                    </div>
+                                    <input class="form-control" name="age" type="text" placeholder="Pet's Age" aria-describedby="petAge">
+                                </div>
+                                <fieldset class="form-group mb-3">
+                                    <div class="row">
+                                        <legend class="col-form-label col-sm-2 pt-0">Sex</legend>
+                                        <div class="col-m-10">
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="maleRadio" name="sex" value="male" checked>
+                                                <label class="form-check-label" for="maleRadio">Male</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input type="radio" class="form-check-input" id="femaleRadio" name="sex" value="female">
+                                                <label class="form-check-label" for="femaleRadio">Female</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </fieldset>
+                                <div class="custom-file mb-3">
+                                    <input type="file" accept="image/*" name="avatar" class="custom-file-input" id="avatarFileInput">
+                                    <label class="custom-file-label" for="avatarFileInput">Upload your pet avatar...</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Add</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!---- End ---->
+        </div>
+    </div>
+    <div class="row pt-3" th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
+        <div class="container-fluid bg-light">
+            <div class="row p-3 pet-card">
+                <div class="container">
+                    <div class="row">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <!-- Pet Avatar -->
+                                <img src="/static/images/animal1.png"
+                                     th:attr="src=${pet.getAvatarUrl()!= null}? pet.getAvatarUrl():'/static/images/animal1.png'"
+                                     class="rounded-circle" width="35px" height="35px">
+                                <h4 class="pl-5" th:text="${pet.getName()}"></h4>
+                                <!-- Upload modal -->
+                                <button class="btn btn-success d-inline ml-auto" data-target="#upload" th:attr="data-target= ${'upload' + ${pet.getId()}}" data-toggle="modal"><i class="fa fa-angle-double-up"></i> Upload File</button>
+                                <div class="modal fade" th:attr="id='upload' + ${pet.getId()}">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <!-- Modal Header -->
+                                            <div class="modal-header">
+                                                <h5 class="modal-title">X-Ray Uploader</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <!-- Modal Body -->
+                                            <div class="modal-body">
+                                                <form th:action="@{__${#httpServletRequest.requestURI}__/{id}/upload(id=${pet.getId()})}" method="post" enctype="multipart/form-data">
+                                                    <div class="input-group mb-3">
+                                                        <div class="input-group-prepend">
+                                                            <button class="input-group-text" type="submit" name="fileupload">Upload</button>
+                                                        </div>
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input" name="fileupload" id="inputGroupFile01">
+                                                            <label class="custom-file-label" for="inputGroupFile01">Choose file...</label>
+                                                        </div>
+                                                    </div>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container pt-2">
+                    <div class="row px-1 pb-1">
+                        <button data-toggle="collapse" data-target="#1general" class="btn btn-block btn-secondary"><i class="fa fa-heartbeat fa-fw"></i><strong> General</strong></button>
+                        <div class="container collapse pt-3" id="1general">
+                            <div class="card card-block">
+                                <p>Rabies Vaccine: 11/17/1995</p>
+                                <p>Booster Shots: 12/12/1212</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row px-1 pb-1">
+                        <button data-toggle="collapse" data-target="#1vacc" class="btn btn-block btn-secondary"><i class="fa fa-shield fa-fw"></i><strong> Vaccines</strong></button>
+                        <div class="container collapse pt-3" id="1vacc">
+                            <div class="card card-block">
+                                <p>Rabies Vaccine: 11/17/1995</p>
+                                <p>Booster Shots: 12/12/1212</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row pb-1 px-1">
+                        <button data-target="#1xray" data-toggle="collapse" class="btn btn-block btn-secondary"><i class="fa fa-plus-square"></i><strong> X-Rays</strong></button>
+                        <div class="container collapse pt-3" id="1xray">
+                            <div class="card card-block" th:each="xray: ${pet.getXrayUrls()}">
+                                <br>
+                                <object th:data="${xray != null} ? /static/images/xray_pdf.pdf : xray" type="application/pdf" width="100%" height="500px">
+                                    <p><b>Example fallback content</b>: This browser does not support PDFs. Please download the PDF to view it: <a href="/pdf/sample-3pp.pdf">Download PDF</a>.</p>
+                                </object>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Endsidebar -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+    $("#inputGroupFile01").change(function () {
+        var label = $(this).next();
+        var index = $(this).val().lastIndexOf("\\");
+        label.text($(this).val().substring(index+1));
+    });
+</script>
+</body>
+</html>

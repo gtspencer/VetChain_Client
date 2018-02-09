@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Client Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/petview.css}">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+
+<body>
+<!-- Sidebar/menu -->
+<div class="nav-side-menu">
+    <div class="brand">
+        <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
+        <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
+        <hr class="border border-success bg-sucess">
+    </div>
+    <i class="fa fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/pets(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-github-alt"></i></span> Pets</a>
+                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fa fa-user-md"></i></span> Doctor</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-newspaper-o"></i></span> News</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-cog"></i></span> Settings</a>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<div class="container-fluid pl-4 bg-light" id="main">
+    <!-- Overview header -->
+    <div class="row pt-5">
+        <h5><b><i class="fa fa-user-md"></i> My Doctor</b></h5>
+    </div>
+    <div class="row p-3 pet-card">
+        <div class="container">
+            <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-1">
+                <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
+                <h4 class="d-inline pl-5">Dr. Octopus</h4>
+            </button>
+            <div class="container p-1 collapse" id="dr-info-1">
+                <div class="card card-block">
+                    <p>Access Since:11/17/95</p>
+                    <p>Pet seen:3</p>
+                    <p><a href="#">View doctor's page</a></p>
+                </div>
+            </div>
+            <button class="btn btn-block btn-large btn-secondary text-left" data-target="#dr-info-2" data-toggle="collapse">
+                <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
+                <h4 class="d-inline pl-5">D.r Strange</h4>
+            </button>
+            <div class="container p-1 collapse" id="dr-info-2">
+                <div class="card card-block">
+                    <p>Access Since:11/17/95</p>
+                    <p>Pet seen:3</p>
+                    <p><a href="#">View doctor's page</a></p>
+                </div>
+            </div>
+            <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-3">
+                <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
+                <h4 class="d-inline pl-5">Dr. Doom</h4>
+            </button>
+            <div class="container p-1 collapse" id="dr-info-3">
+                <div class="card card-block">
+                    <p>Access Since:11/17/95</p>
+                    <p>Pet seen:3</p>
+                    <p><a href="#">View doctor's page</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Endsidebar -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script>
+    $("#inputGroupFile01").change(function () {
+        var label = $(this).next();
+        var index = $(this).val().lastIndexOf("\\");
+        label.text($(this).val().substring(index+1));
+    });
+</script>
+</body>
+</html>
