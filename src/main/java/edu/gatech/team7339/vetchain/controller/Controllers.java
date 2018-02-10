@@ -3,6 +3,8 @@ package edu.gatech.team7339.vetchain.controller;
 import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
 import edu.gatech.team7339.vetchain.model.Pet;
+import edu.gatech.team7339.vetchain.model.PetMedRecord;
+import edu.gatech.team7339.vetchain.model.PetXrayUrl;
 import edu.gatech.team7339.vetchain.model.User;
 import edu.gatech.team7339.vetchain.repository.PetMedRecordRepo;
 import edu.gatech.team7339.vetchain.repository.PetRepo;
@@ -17,10 +19,13 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.xml.crypto.Data;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -68,6 +73,13 @@ public class Controllers {
             for (Pet pet: user.getPets()) {
                 pet.setUser(user);
                 pet.setXrayUrls(petXrayUrlRepo.findPetXrayUrlsByPetId(pet.getId()));
+                for(PetXrayUrl xrayUrl:pet.getXrayUrls()) {
+                    xrayUrl.setPet(pet);
+                }
+                pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
+                for(PetMedRecord medRecord: pet.getMedRecordUrls()){
+                    medRecord.setPet(pet);
+                }
             }
             redirect.addFlashAttribute("userInfo", user);
             return "redirect:/" + user.getType() + "/" + user.getId();
@@ -158,20 +170,34 @@ public class Controllers {
      * @param model
      * @return
      */
-    @RequestMapping(value = "/{type}/{id}/pets/{petId}/upload",method = RequestMethod.POST)
+    @RequestMapping(value = "/{type}/{id}/pets/{petId}/addXray",method = RequestMethod.POST)
     public String showPets(@PathVariable("type") String type,
                            @PathVariable("id") Integer id,
                            @PathVariable("petId") Integer petId,
-                           @RequestParam("fileupload")MultipartFile file,
+                           @RequestParam("xrayFile")MultipartFile file,
                            ModelMap model) {
-        if (!file.isEmpty()) {
+        Pet pet = null;
+        for (Pet p: user.getPets()) {
+            if(p.getId() == petId) {
+                pet = p;
+                break;
+            }
+        }
+        if (!file.isEmpty() && pet != null) {
             String name = file.getOriginalFilename();
             try {
-                SimpleDateFormat formatter = new SimpleDateFormat("MM/DD/YYYY");
-                formatter.format(new Date());
+                Date date = new Date();
                 byte[] bytes = file.getBytes();
-                Path path = Paths.get("./",id.toString(),petId.toString(),"1/1/2018",name);
+                Path path = Paths.get("/files",id.toString(),petId.toString(),Long.toString(date.getTime()),name);
+                Files.createDirectories(path.getParent());
                 Files.write(path, bytes);
+                PetXrayUrl xray = new PetXrayUrl();
+                xray.setPet(pet);
+                xray.setDate(date);
+                xray.setUrl("/images/"+id+"/"+petId+"/"+Long.toString(date.getTime())+"/"+name);
+                pet.getXrayUrls().add(xray);
+                petXrayUrlRepo.save(xray);
+                petRepo.save(pet);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -181,9 +207,9 @@ public class Controllers {
 
     @RequestMapping(value = "/{type}/{id}/pets/addPet", method = RequestMethod.POST)
     public String addPet(@PathVariable("type") String type,
-                         @PathVariable("id") int userId,
+                         @PathVariable("id") Integer userId,
                          @RequestParam("name") String name,
-                         @RequestParam("age") int age,
+                         @RequestParam("dob") String dob,
                          @RequestParam("species") String species,
                          @RequestParam("avatar") MultipartFile avatar,
                          @RequestParam("sex") String sex,
@@ -192,21 +218,23 @@ public class Controllers {
         pet.setUser(user);
         pet.setName(name);
         pet.setSpecies(species);
-        pet.setAge(age);
         pet.setSex(sex);
+        pet.setDob(dob);
         petRepo.save(pet);
-        pet = petRepo.findPetByNameAndAge(name,age);
-        System.out.print("New Pet: " +name+" "+species+" "+age+" "+sex+" "+avatar.getOriginalFilename());
+        pet = petRepo.findPetByNameAndDob(name,pet.getDob());
         if(!avatar.isEmpty()) {
+            String avatarFileName = avatar.getOriginalFilename();
             try {
-                Date date = new Date();
                 byte[] bytes = avatar.getBytes();
-                Path path = Paths.get(".\\"+userId+"\\"+pet.getId()+"\\"+date.getTime()+"\\"+name);
+                Path path = Paths.get("/files",userId.toString(),Integer.toString(pet.getId()),"avatar",avatarFileName);
+                Files.createDirectories(path.getParent());
                 Files.write(path, bytes);
-                pet.setAvatarUrl(path.toString());
+                pet.setAvatarUrl("/images/"+userId+"/"+pet.getId()+"/avatar/"+avatarFileName);
             } catch (IOException e) {
                 pet.setAvatarUrl("/static/images/avatar.png");
             }
+            petRepo.save(pet);
+            user.getPets().add(pet);
         }
         return "redirect:/"+type+"/"+userId+"/pets";
     }

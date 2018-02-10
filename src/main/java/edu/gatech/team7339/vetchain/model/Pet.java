@@ -2,6 +2,9 @@ package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -22,8 +25,6 @@ public class Pet {
     private String species;
     @Column(nullable = false, name = "SEX")
     private String sex;
-    @Column (nullable = false, name = "AGE")
-    private int age;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
     private List<PetXrayUrl> xrayUrls;
@@ -33,6 +34,22 @@ public class Pet {
 
     @Column(name = "AVATAR_URL")
     private String avatarUrl;
+
+    @Column(name ="DOB")
+    public String dob;
+
+    public Pet(){
+        xrayUrls= new ArrayList<>();
+        medRecordUrls=new ArrayList<>();
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public String getDob() {
+        return dob;
+    }
 
     public void setId(int id) {
         this.id = id;
@@ -74,12 +91,9 @@ public class Pet {
         return sex;
     }
 
-    public void setAge(int age) {
-        this.age = age;
-    }
-
     public int getAge() {
-        return age;
+        int year = Integer.parseInt(dob.substring(0,dob.indexOf("-")));
+        return Calendar.getInstance().get(Calendar.YEAR) - year;
     }
 
     public List<PetMedRecord> getMedRecordUrls() {

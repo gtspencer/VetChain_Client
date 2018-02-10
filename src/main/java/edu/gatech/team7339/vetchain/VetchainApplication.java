@@ -21,8 +21,9 @@ public class VetchainApplication implements WebMvcConfigurer {
 			"classpath:/static/", "classpath:/public/","classpath:/css","classpath:/js" };
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
-	}
+        registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
+        registry.addResourceHandler("/images/**").addResourceLocations("file:///C:/files/");
+    }
 	private class TomCatConfig {
 
 	    @Bean
