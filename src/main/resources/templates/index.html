@@ -71,6 +71,16 @@
                         </div>
                         <input type="tel" th:field="*{phone}" class="form-control" placeholder="Phone Number" aria-label="Phone Number" aria-describedby="phone-addon-reg" required/>
                     </div>
+                    <!--dropdown for user type options-->
+                    <div class="input-group mb-3">
+                        <div>
+                            <select>
+                                <option type="usertype" th:field="*{usertype}" value="Pet Owner">Pet Owner</option>
+                                <option type="usertype" th:field="*{usertype}" value="Doctor">Doctor</option>
+                            </select>
+                        </div>
+                    </div>
+
                     <button class="rounded" type="submit">create</button>
                     <p class="pt-2">Already registered? <a class="message" href="#">Sign In</a></p>
                 </form>

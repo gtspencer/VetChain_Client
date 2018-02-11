@@ -5,6 +5,7 @@ public class Register {
     private String password;
     private String email;
     private String phone;
+    private String usertype;
 
     public String getUsername() {
         return username;
@@ -37,4 +38,8 @@ public class Register {
     public void setPhone(String phone) {
         this.phone = phone;
     }
+
+    public void setUserType(String usertype) {this.usertype = usertype;}
+
+    public String getUsertype() {return usertype;}
 }
