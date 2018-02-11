@@ -18,7 +18,7 @@ public class PetXrayUrl {
     @Column(name = "URL")
     private String url;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE")
     private Date date;
 
