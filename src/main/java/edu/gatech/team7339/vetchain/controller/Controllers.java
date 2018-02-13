@@ -1,6 +1,7 @@
 package edu.gatech.team7339.vetchain.controller;
 
 import edu.gatech.team7339.vetchain.bindingObject.Login;
+import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
 import edu.gatech.team7339.vetchain.model.Pet;
 import edu.gatech.team7339.vetchain.model.PetMedRecord;
@@ -156,6 +157,7 @@ public class Controllers {
                            ModelMap model) {
         if(user != null) {
             model.addAttribute("userInfo", user);
+            model.addAttribute("petInfo",new PetInfo());
             return "petview";
         }
         return "redirect:/";
@@ -207,29 +209,32 @@ public class Controllers {
 
     @RequestMapping(value = "/{type}/{id}/pets/addPet", method = RequestMethod.POST)
     public String addPet(@PathVariable("type") String type,
-                         @PathVariable("id") Integer userId,
-                         @RequestParam("name") String name,
-                         @RequestParam("dob") String dob,
-                         @RequestParam("species") String species,
-                         @RequestParam("avatar") MultipartFile avatar,
-                         @RequestParam("sex") String sex,
+                         @PathVariable("id") String userId,
+                         @ModelAttribute("petInfo") PetInfo petInfo,
+                         @RequestParam("gender") String gender,
+                         @RequestParam("unit") String unit,
                          ModelMap model) {
-        Pet pet = new Pet();
-        pet.setUser(user);
-        pet.setName(name);
-        pet.setSpecies(species);
-        pet.setSex(sex);
-        pet.setDob(dob);
+
+        Pet pet = new Pet(user);
+        pet.setName(petInfo.getName());
+        pet.setBreed(petInfo.getBreed());
+        pet.setGender(gender);
+        pet.setInsuranceCarrier(petInfo.getInsCarrier().isEmpty()? "Unknown":petInfo.getInsCarrier());
+        pet.setLicense(petInfo.getLicense().isEmpty()? "Unknown" : petInfo.getLicense());
+        pet.setInsuranceNum(petInfo.getInsNum().isEmpty()? "Unknown" : petInfo.getInsNum());
+        pet.setDob(petInfo.getDob());
+        pet.setWeight(petInfo.getWeight() + " " + unit);
+        pet.setMicrochipNum(petInfo.getMicrochip().isEmpty()? "Unknown" : petInfo.getMicrochip());
         petRepo.save(pet);
-        pet = petRepo.findPetByNameAndDob(name,pet.getDob());
-        if(!avatar.isEmpty()) {
-            String avatarFileName = avatar.getOriginalFilename();
+        pet = petRepo.findPetByNameAndDob(pet.getName(), pet.getDob());
+        if (!petInfo.getAvatarUrl().isEmpty()) {
+            String avatarFileName = petInfo.getAvatarUrl().getOriginalFilename();
             try {
-                byte[] bytes = avatar.getBytes();
-                Path path = Paths.get("/files",userId.toString(),Integer.toString(pet.getId()),"avatar",avatarFileName);
+                byte[] bytes = petInfo.getAvatarUrl().getBytes();
+                Path path = Paths.get("/files", userId, Integer.toString(pet.getId()), "avatar", avatarFileName);
                 Files.createDirectories(path.getParent());
                 Files.write(path, bytes);
-                pet.setAvatarUrl("/images/"+userId+"/"+pet.getId()+"/avatar/"+avatarFileName);
+                pet.setAvatarUrl("/images/" + userId + "/" + pet.getId() + "/avatar/" + avatarFileName);
             } catch (IOException e) {
                 pet.setAvatarUrl("/static/images/avatar.png");
             }
