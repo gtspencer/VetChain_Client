@@ -73,13 +73,13 @@
                         </div>
                         <div class="col">
                             <div class="container text-right">
-                                <h3>52</h3>
+                                <h3 th:text="${userInfo.getTotalPets()}">&nbsp;</h3>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="container text-center pt-5">
-                            <h3>Total Vet Visits</h3>
+                            <h3>Total Pets</h3>
                         </div>
                     </div>
                 </div>
@@ -115,7 +115,7 @@
                         </div>
                         <div class="col">
                             <div class="container text-right">
-                                <h3>52</h3>
+                                <h3 th:text="${userInfo.getCreatedDate()}"></h3>
                             </div>
                         </div>
                     </div>
@@ -171,17 +171,12 @@
                 <hr class="border border-success bg-success">
             </div>
             <ul class="list-group">
-                <li class="list-group-item list-group-item-success">
-                    <img th:src="@{/static/images/animal1.png}" class="rounded-circle" width="35px" height="35px">
-                    <h5 class="d-inline pl-md-5">Orc</h5>
+                <li th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}" class="list-group-item list-group-item-success">
+                    <img th:attr="src=${!pet.getAvatarUrl().isEmpty()}? ${pet.getAvatarUrl()}:'/static/images/animal1.png'" class="rounded-circle" width="35px" height="35px">
+                    <h5 th:text="${pet.getName()}" class="d-inline pl-md-5">&nbsp;</h5>
                 </li>
-                <li class="list-group-item list-group-item-success">
-                    <img th:src="@{/static/images/animal2.gif}" class="rounded-circle" width="35px" height="35px">
-                    <h5 class="d-inline pl-md-5">Trump</h5>
-                </li>
-                <li class="list-group-item list-group-item-success">
-                    <img th:src="@{/static/images/animal3.png}" class="rounded-circle" width="35px" height="35px">
-                    <h5 class="d-inline pl-md-5">Jane</h5>
+                <li th:unless="${!userInfo.getPets().isEmpty()}" class="list-group-item list-group-item-success">
+                    <h5 class="d-inline pl-md-5">No Pets! </h5>
                 </li>
             </ul>
         </div>

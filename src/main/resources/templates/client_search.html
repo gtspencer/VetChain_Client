@@ -39,15 +39,24 @@
     <div class="row pt-5">
         <h5><b><i class="fa fa-history"></i> My History</b></h5>
     </div>
-    <div class="row p-3 pet-card">
+
+                <div class="row p-3">
         <div class="container">
             <input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search for a name, keyword, or date. . .">
 
             <table id="myTable">
+                <thead>
                 <tr class="header">
                     <th style="width:25%;">Name</th>
                     <th style="width:60%;">Info</th>
                     <th style="width:15%;">Date</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
+                    <td th:text="${pet.getName()}">&nbsp;</td>
+                    <td th:text="${pet.getBreed()}">&nbsp;</td>
+                    <td th:text="${pet.dob}">&nbsp;</td>
                 </tr>
                 <tr>
                     <td>Trump</td>
@@ -74,66 +83,7 @@
                     <td>Something</td>
                     <td>1/1/1111</td>
                 </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
+                </tbody>
 
             </table>
         </div>
@@ -155,7 +105,7 @@
 
     <style>
         #myInput {
-            background-image: url("@{/static/images/searchicon.png}"); /* Add a search icon to input */
+            background-image: th:src = "@{/static/images/searchicon.png}"; /* Add a search icon to input */
             background-position: 10px 12px; /* Position the search icon */
             background-repeat: no-repeat; /* Do not repeat the icon image */
             width: 100%; /* Full-width */

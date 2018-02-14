@@ -55,20 +55,6 @@ public class Controllers {
         return "index";
     }
 
-    @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
-    public String showSearch(@PathVariable("type") String type,
-                             @PathVariable("id") int id,
-                             ModelMap model,
-                             @ModelAttribute("userInfo") User user) {
-        if (user != null) {
-            if (type.equalsIgnoreCase("client")) {
-                model.addAttribute("userInfo", user);
-                return "client_search";
-            }
-        }
-        return "redirect:/";
-    }
-
     /**
      * Login Authentication
      * @param login
@@ -145,14 +131,28 @@ public class Controllers {
     @RequestMapping(value = "/{type}/{id}", method = RequestMethod.GET)
     public String showHomePage(@PathVariable("type") String type,
                                @PathVariable("id") int id,
-                               ModelMap model,
-                               @ModelAttribute("userInfo") User user) {
+                               ModelMap model) {
         if (user != null) {
             if (type.equalsIgnoreCase("client")) {
                 model.addAttribute("userInfo", user);
+                model.addAttribute("petInfo",new PetInfo());
                 return "client_home";
             } else {
                 return "redirect:/"; // Fix this for doctor
+            }
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
+    public String showSearch(@PathVariable("type") String type,
+                             @PathVariable("id") int id,
+                             ModelMap model) {
+        if (user != null) {
+            if (type.equalsIgnoreCase("client")) {
+                model.addAttribute("userInfo", user);
+                model.addAttribute("petInfo",new PetInfo());
+                return "client_search";
             }
         }
         return "redirect:/";
