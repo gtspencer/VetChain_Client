@@ -176,6 +176,7 @@
                     <h5 th:text="${pet.getName()}" class="d-inline pl-md-5">&nbsp;</h5>
                 </li>
                 <li th:unless="${!userInfo.getPets().isEmpty()}" class="list-group-item list-group-item-success">
+                    <img th:attr="src='/static/images/animal1.png'" class="rounded-circle" width="35px" height="35px">
                     <h5 class="d-inline pl-md-5">No Pets! </h5>
                 </li>
             </ul>
