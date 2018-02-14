@@ -55,6 +55,20 @@ public class Controllers {
         return "index";
     }
 
+    @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
+    public String showSearch(@PathVariable("type") String type,
+                             @PathVariable("id") int id,
+                             ModelMap model,
+                             @ModelAttribute("userInfo") User user) {
+        if (user != null) {
+            if (type.equalsIgnoreCase("client")) {
+                model.addAttribute("userInfo", user);
+                return "client_search";
+            }
+        }
+        return "redirect:/";
+    }
+
     /**
      * Login Authentication
      * @param login
