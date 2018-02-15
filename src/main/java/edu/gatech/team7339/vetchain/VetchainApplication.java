@@ -18,7 +18,7 @@ public class VetchainApplication implements WebMvcConfigurer {
 
 	private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {
 			"classpath:/META-INF/resources/", "classpath:/resources/",
-			"classpath:/static/", "classpath:/public/","classpath:/css","classpath:/js" };
+			"classpath:/static/", "classpath:/public/","classpath:/css","classpath:/js"};
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);

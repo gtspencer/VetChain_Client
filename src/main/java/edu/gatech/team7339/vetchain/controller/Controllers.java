@@ -11,14 +11,18 @@ import edu.gatech.team7339.vetchain.repository.PetMedRecordRepo;
 import edu.gatech.team7339.vetchain.repository.PetRepo;
 import edu.gatech.team7339.vetchain.repository.PetXrayUrlRepo;
 import edu.gatech.team7339.vetchain.repository.UserRepo;
+import edu.gatech.team7339.vetchain.validator.LoginValidator;
+import edu.gatech.team7339.vetchain.validator.RegisterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +46,10 @@ public class Controllers {
     PetXrayUrlRepo petXrayUrlRepo;
     @Autowired
     PetMedRecordRepo petMedRecordRepo;
-
+    @Autowired
+    LoginValidator loginValidator;
+    @Autowired
+    RegisterValidator registerValidator;
     /**
      * Login and Register Page
      * @param model
@@ -50,8 +57,12 @@ public class Controllers {
      */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String showIndex(ModelMap model) {
-        model.addAttribute("loginInfo",new Login());
-        model.addAttribute("regInfo",new Register());
+        if (!model.containsAttribute("loginInfo")) {
+            model.addAttribute("loginInfo", new Login());
+        }
+        if(!model.containsAttribute("regInfo")) {
+            model.addAttribute("regInfo", new Register());
+        }
         return "index";
     }
 
@@ -64,12 +75,13 @@ public class Controllers {
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String processLogin(@ModelAttribute Login login,
+    public String processLogin(@Valid @ModelAttribute Login login,
                                ModelMap model,
                                BindingResult result,
                                RedirectAttributes redirect) {
-        user = userRepo.findUserByUsernameAndPassword(login.getUsername(),login.getPassword());
-        if(user != null){
+        loginValidator.validate(login,result);
+        if(!result.hasErrors()){
+            user = userRepo.findUserByUsernameAndPassword(login.getUsername(),login.getPassword());
             user.setPets(petRepo.findPetsByUserId(user.getId()));
             for (Pet pet: user.getPets()) {
                 pet.setUser(user);
@@ -85,6 +97,8 @@ public class Controllers {
             redirect.addFlashAttribute("userInfo", user);
             return "redirect:/" + user.getType() + "/" + user.getId();
         }
+        redirect.addFlashAttribute("org.springframework.validation.BindingResult.loginInfo",result);
+        redirect.addFlashAttribute("loginInfo",login);
         return "redirect:/";
     }
 
@@ -104,7 +118,13 @@ public class Controllers {
         if(user != null) {
             return "redirect:/";//Fix this later
         } else {
-            userRepo.save(new User(reg.getUsername(),reg.getPassword(),reg.getEmail(),reg.getPhone()));
+            registerValidator.validate(reg,result);
+            if(result.hasErrors()) {
+                redirect.addFlashAttribute("org.springframework.BindingResult.regInfo",result);
+                redirect.addFlashAttribute("regInfo",reg);
+            } else {
+                userRepo.save(new User(reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+            }
         }
         return "redirect:/";
     }
@@ -125,14 +145,12 @@ public class Controllers {
      * @param type
      * @param id
      * @param model
-     * @param user
      * @return
      */
     @RequestMapping(value = "/{type}/{id}", method = RequestMethod.GET)
     public String showHomePage(@PathVariable("type") String type,
                                @PathVariable("id") int id,
-                               ModelMap model,
-                               @ModelAttribute("userInfo") User user) {
+                               ModelMap model) {
         if (user != null) {
             if (type.equalsIgnoreCase("client")) {
                 model.addAttribute("userInfo", user);
@@ -196,7 +214,7 @@ public class Controllers {
                 PetXrayUrl xray = new PetXrayUrl();
                 xray.setPet(pet);
                 xray.setDate(date);
-                xray.setUrl("/images/"+id+"/"+petId+"/"+Long.toString(date.getTime())+"/"+name);
+                xray.setUrl("/images/"+id.toString()+"/"+petId.toString()+"/"+Long.toString(date.getTime())+"/"+name);
                 pet.getXrayUrls().add(xray);
                 petXrayUrlRepo.save(xray);
                 petRepo.save(pet);

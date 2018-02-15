@@ -5,6 +5,15 @@ public class Register {
     private String password;
     private String email;
     private String phone;
+    private String confirmPassword;
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
 
     public String getUsername() {
         return username;

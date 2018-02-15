@@ -10,7 +10,6 @@
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
 </head>
-
 <body>
 <!-- Sidebar/menu -->
 <div class="nav-side-menu">
@@ -101,10 +100,12 @@
                                     <span class="input-group-text" id="petWeight"><i class="fas fa-tachometer-alt"></i></span>
                                 </div>
                                 <input class="form-control" type="text" th:field="*{weight}" placeholder="Weight" aria-describedby="petWeight" required>
-                                <select class="custom-select ml-sm-2" name="unit">
-                                    <option value="lbs">lbs</option>
-                                    <option value="kg">kg</option>
-                                </select>
+                                <div class="input-group-append">
+                                    <select class="custom-select ml-sm-2" name="unit">
+                                        <option value="lbs">lbs</option>
+                                        <option value="kg">kg</option>
+                                    </select>
+                                </div>
                             </div>
                         </div>
                         <!-- Gender -->
@@ -173,7 +174,7 @@
             </form>
         </div>
     </div>
-    <!-- Pet Card -->
+    <!-- Pet View -->
     <div class="row pt-3" th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
         <div class="container bg-light">
             <div class="row p-3 pet-card">
@@ -346,7 +347,7 @@
                                 </div>
                                 <!-- Add Xray Button-->
                                 <div th:unless="${pet.getXrayUrls().isEmpty()}" class="row pb-3">
-                                    <button class="btn btn-success" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal"><i class="fa fa-plus"></i>Add Xray File</button>
+                                    <button class="btn btn-success" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal"><i class="fa fa-plus"></i> Add Xray File</button>
                                 </div>
                                 <!-- View All Xrays -->
                                 <div class="row" th:unless="${pet.getXrayUrls().isEmpty()}" th:each="xray : ${pet.getXrayUrls()}">
@@ -373,7 +374,7 @@
                                             <div class="modal-body">
                                                 <div class="container">
                                                     <div class="custom-file mb-3">
-                                                        <input type="file" accept="application/pdf | image/*" name="xrayFile" class="custom-file-input upload-file" id="XrayFile">
+                                                        <input type="file" accept="application/pdf" name="xrayFile" class="custom-file-input upload-file" id="XrayFile">
                                                         <label class="custom-file-label" for="XrayFile">Choose your Xray...</label>
                                                     </div>
                                                 </div>

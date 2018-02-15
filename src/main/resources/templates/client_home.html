@@ -6,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.0.0/dist/css/bootstrap.min.css}">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
 </head>
 
 <body>
@@ -23,12 +23,12 @@
         <div class="menu-list">
             <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
                 <nav class="nav nav-pills flex-column">
-                    <a class="nav-link active sidebar-option message" href="#"><span><i class="fa fa-user-circle"></i></span> Overview</a>
-                    <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/pets}"><span><i class="fa fa-github-alt"></i></span> Pets</a>
-                    <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/doctors}"><span><i class="fa fa-user-md"></i></span> Doctor</a>
-                    <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-history"></i></span> History</a>
-                    <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-newspaper-o"></i></span> News</a>
-                    <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-cog"></i></span> Settings</a>
+                    <a class="nav-link active sidebar-option message" href="#"><span><i class="fas fa-user-circle"></i></span> Overview</a>
+                    <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/pets}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
+                    <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/doctors}"><span><i class="fas fa-user-md"></i></span> Doctor</a>
+                    <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-history"></i></span> History</a>
+                    <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
+                    <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
                 </nav>
             </div>
         </div>
@@ -47,7 +47,7 @@
                     <div class="row pt-2">
                         <div class="col">
                             <div class="container text-left">
-                                <span><i class="fa fa-stethoscope fa-3x"></i></span>
+                                <span><i class="fas fa-stethoscope fa-3x"></i></span>
                             </div>
                         </div>
                         <div class="col">
@@ -68,7 +68,7 @@
                     <div class="row pt-2">
                         <div class="col">
                             <div class="container text-left">
-                                <span><i class="fa fa-bug fa-3x"></i></span>
+                                <span><i class="fas fa-bug fa-3x"></i></span>
                             </div>
                         </div>
                         <div class="col">
@@ -89,7 +89,7 @@
                     <div class="row pt-2">
                         <div class="col">
                             <div class="container text-left">
-                                <span><i class="fa fa-medkit fa-3x "></i></span>
+                                <span><i class="fas fa-medkit fa-3x "></i></span>
                             </div>
                         </div>
                         <div class="col">
@@ -110,7 +110,7 @@
                     <div class="row pt-2">
                         <div class="col">
                             <div class="container text-left">
-                                <span><i class="fa fa-users fa-3x"></i></span>
+                                <span><i class="fas fa-users fa-3x"></i></span>
                             </div>
                         </div>
                         <div class="col">
@@ -134,32 +134,32 @@
             </div>
             <table class="table table-striped">
                 <tr>
-                    <td><i class="fa fa-paw text-info"></i></td>
+                    <td><i class="fas fa-paw text-info"></i></td>
                     <td>Pet got vaccine.</td>
                     <td><i>now</i></td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-file-text text-danger"></i></td>
+                    <td><i class="fas fa-file-alt text-danger"></i></td>
                     <td>New record uploaded.</td>
                     <td><i>17 mins</i></td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-file-text text-warning"></i></td>
+                    <td><i class="fas fa-file-alt text-warning"></i></td>
                     <td>New record uploaded.</td>
                     <td><i>11/17/95</i></td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-bookmark text-primary"></i></td>
+                    <td><i class="fas fa-bookmark text-primary"></i></td>
                     <td>Pet is due for a checkup.</td>
                     <td><i>Millions of years ago</i></td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-rebel text-success"></i></td>
+                    <td><i class="fas fa-smile text-success"></i></td>
                     <td>More Stuff.</td>
                     <td><i>idk</i></td>
                 </tr>
                 <tr>
-                    <td><i class="fa fa-paw text-dark"></i></td>
+                    <td><i class="fas fa-paw text-dark"></i></td>
                     <td>Last thing.</td>
                     <td><i>whenever</i></td>
                 </tr>
@@ -217,9 +217,8 @@
         </div>
     </div>
             <!-- Endsidebar -->
-    <script language="JavaScript" type="text/javascript" th:src="@{/webjars/popper.js/1.12.9/dist/popper.min.js}"></script>
-    <script language="JavaScript" type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0/dist/js/bootstrap.min.js}"></script>
-    <script language="JavaScript" type="text/javascript" th:src="@{/webjars/jquery/3.2.1/dist/jquery.min.js}"></script>
+    <script language="JavaScript" type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+    <script language="JavaScript" type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
     <script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
 </body>
 </html>
