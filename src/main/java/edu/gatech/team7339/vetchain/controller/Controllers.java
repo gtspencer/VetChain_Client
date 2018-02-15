@@ -154,9 +154,24 @@ public class Controllers {
         if (user != null) {
             if (type.equalsIgnoreCase("client")) {
                 model.addAttribute("userInfo", user);
+                model.addAttribute("petInfo",new PetInfo());
                 return "client_home";
             } else {
                 return "redirect:/"; // Fix this for doctor
+            }
+        }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
+    public String showSearch(@PathVariable("type") String type,
+                             @PathVariable("id") int id,
+                             ModelMap model) {
+        if (user != null) {
+            if (type.equalsIgnoreCase("client")) {
+                model.addAttribute("userInfo", user);
+                model.addAttribute("petInfo",new PetInfo());
+                return "client_search";
             }
         }
         return "redirect:/";

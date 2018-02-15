@@ -1,8 +1,11 @@
 package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;
 
 @Entity
 @Table(name = "USER")
@@ -21,9 +24,11 @@ public class User {
     private String phone;
     @Column(nullable = false, name = "ACCOUNT_TYPE")
     private String type;
-
+    @Column(nullable = false, name = "DATE_CREATED")
+    private String dateCreated;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> pets;
+
 
     public User(){
         this.type = "client";
@@ -35,10 +40,22 @@ public class User {
         this.phone = phone;
         this.type = "client";
         pets = new ArrayList<>();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+        Date date = new Date();
+        date.getTime();
+        dateCreated = dateFormat.format(date).toString();
+    }
+
+    public String getCreatedDate() {
+        return dateCreated;
     }
 
     public List<Pet> getPets() {
         return pets;
+    }
+
+    public int getTotalPets() {
+        return pets.size();
     }
 
     public void setPets(List<Pet> pets) {

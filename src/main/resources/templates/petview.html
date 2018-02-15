@@ -26,7 +26,7 @@
                 <a class="nav-link sidebar-option" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
                 <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
                 <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/doctors(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-user-md"></i></span> Doctor</a>
-                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/search(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-history"></i></span> History</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
             </nav>
