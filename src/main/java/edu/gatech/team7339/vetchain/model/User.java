@@ -24,11 +24,11 @@ public class User {
     private String phone;
     @Column(nullable = false, name = "ACCOUNT_TYPE")
     private String type;
+    @Temporal(TemporalType.DATE)
     @Column(nullable = false, name = "DATE_CREATED")
-    private String dateCreated;
+    private Date dateCreated;
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> pets;
-
 
     public User(){
         this.type = "client";
@@ -40,13 +40,10 @@ public class User {
         this.phone = phone;
         this.type = "client";
         pets = new ArrayList<>();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
-        Date date = new Date();
-        date.getTime();
-        dateCreated = dateFormat.format(date).toString();
+        dateCreated = new Date();
     }
 
-    public String getCreatedDate() {
+    public Date getCreatedDate() {
         return dateCreated;
     }
 

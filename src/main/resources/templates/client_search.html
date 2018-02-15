@@ -6,29 +6,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/webjars/bootstrap/4.0.0/dist/css/bootstrap.min.css}">
-    <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/history_style.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
 </head>
-
 <body>
 <!-- Sidebar/menu -->
 <div class="nav-side-menu">
     <div class="brand">
         <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
         <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
-        <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
+        <a th:href="@{/logout}" class="logout"><i class="fas fa-sign-out"></i> Logout</a>
         <hr class="border border-success bg-sucess">
     </div>
-    <i class="fa fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
+    <i class="fas fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
     <div class="menu-list">
         <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
             <nav class="nav nav-pills flex-column">
-                <a class="nav-link sidebar-option message" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-user-circle"></i></span> Overview</a>
-                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/pets(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-github-alt"></i></span> Pets</a>
-                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/doctors(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fa fa-user-md"></i></span> Doctor</a>
-                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__/}"><span><i class="fa fa-history"></i></span> History</a>
-                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-newspaper-o"></i></span> News</a>
-                <a class="nav-link sidebar-option" href="#"><span><i class="fa fa-cog"></i></span> Settings</a>
+                <a class="nav-link sidebar-option message" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/pets(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
+                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/doctors(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-user-md"></i></span> Doctor</a>
+                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__/}"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
             </nav>
         </div>
     </div>
@@ -37,13 +37,11 @@
 <div class="container-fluid pl-4 bg-light" id="main">
     <!-- Overview header -->
     <div class="row pt-5">
-        <h5><b><i class="fa fa-history"></i> My History</b></h5>
+        <h5><b><i class="fas fa-history"></i> My History</b></h5>
     </div>
-
-                <div class="row p-3">
+    <div class="row p-3">
         <div class="container">
             <input type="text" id="myInput" onkeyup="searchTable()" placeholder="Search for a name, keyword, or date. . .">
-
             <table id="myTable">
                 <thead>
                 <tr class="header">
@@ -58,85 +56,14 @@
                     <td th:text="${pet.getBreed()}">&nbsp;</td>
                     <td th:text="${pet.dob}">&nbsp;</td>
                 </tr>
-                <tr>
-                    <td>Trump</td>
-                    <td>Finally impeached</td>
-                    <td>Any day now</td>
-                </tr>
-                <tr>
-                    <td>Dog</td>
-                    <td>Vaccinated and heartworm</td>
-                    <td>11/17/17</td>
-                </tr>
-                <tr>
-                    <td>Mr. Poopy Butthole</td>
-                    <td>Some stuff and more stuff</td>
-                    <td>7/11/2011</td>
-                </tr>
-                <tr>
-                    <td>Orc</td>
-                    <td>Vasectomy</td>
-                    <td>5/6/1995</td>
-                </tr>
-                <tr>
-                    <td>Placeholder</td>
-                    <td>Something</td>
-                    <td>1/1/1111</td>
-                </tr>
-                </tbody>
-
             </table>
         </div>
     </div>
 </div>
-
-
-
-
-
-
-
-<!-- Endsidebar -->
-<script language="JavaScript" type="text/javascript" th:src="@{/webjars/popper.js/1.12.9/dist/popper.min.js}"></script>
-<script language="JavaScript" type="text/javascript" th:src="@{/webjars/bootstrap/4.0.0/dist/js/bootstrap.min.js}"></script>
-<script language="JavaScript" type="text/javascript" th:src="@{/webjars/jquery/3.2.1/dist/jquery.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
 <script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
 <script language="JavaScript" type="text/javascript" th:src="@{/static/js/MainJS.js}"></script>
-
-    <style>
-        #myInput {
-            background-image: th:src = "@{/static/images/searchicon.png}"; /* Add a search icon to input */
-            background-position: 10px 12px; /* Position the search icon */
-            background-repeat: no-repeat; /* Do not repeat the icon image */
-            width: 100%; /* Full-width */
-            font-size: 16px; /* Increase font-size */
-            padding: 12px 20px 12px 40px; /* Add some padding */
-            border: 1px solid #ddd; /* Add a grey border */
-            margin-bottom: 12px; /* Add some space below the input */
-        }
-
-        #myTable {
-            border-collapse: collapse; /* Collapse borders */
-            width: 100%; /* Full-width */
-            border: 1px solid #ddd; /* Add a grey border */
-            font-size: 18px; /* Increase font-size */
-        }
-
-        #myTable th, #myTable td {
-            text-align: left; /* Left-align text */
-            padding: 12px; /* Add padding */
-        }
-
-        #myTable tr {
-            /* Add a bottom border to all table rows */
-            border-bottom: 1px solid #ddd;
-        }
-
-        #myTable tr.header, #myTable tr:hover {
-            /* Add a grey background color to the table header and on hover */
-            background-color: #f1f1f1;
-        }
-    </style>
-
 </body>
 </html>
