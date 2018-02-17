@@ -38,46 +38,51 @@
 <div class="container-fluid pl-4 bg-light" id="main">
     <!-- Overview header -->
     <div class="row pt-5">
-        <h5><b><i class="fas fa-user-md"></i> My Doctor</b></h5>
+        <h5><b><i class="fas fa-user-md"></i> My Doctors</b></h5>
     </div>
-    <div class="row p-3 pet-card">
-        <div class="container">
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-1">
+    <div class="row pt-3" th:unless="${doctorList.isEmpty()}" th:each="doctor : ${doctorList}">
+        <div class="container bg-light">
+            <div class="row p-3 pet-card">
+                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" th:attr="data-target='#general'+${doctor.getUsername()}">
                     <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">Dr. Octopus</h4>
+                    <h4 class="d-inline pl-5"><i th:text="${doctor.getUsername()}"></i></h4>
                 </button>
-                <div class="container p-1 collapse" id="dr-info-1">
-                    <div class="card card-block">
-                        <p>Access Since:11/17/95</p>
-                        <p>Pet seen:3</p>
-                        <p><a href="#">View doctor's page</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-target="#dr-info-2" data-toggle="collapse">
-                    <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">D.r Strange</h4>
-                </button>
-                <div class="container p-1 collapse" id="dr-info-2">
-                    <div class="card card-block">
-                        <p>Access Since:11/17/95</p>
-                        <p>Pet seen:3</p>
-                        <p><a href="#">View doctor's page</a></p>
-                    </div>
-                </div>
-            </div>
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-3">
-                    <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">Dr. Doom</h4>
-                </button>
-                <div class="container p-1 collapse" id="dr-info-3">
-                    <div class="card card-block">
-                        <p>Access Since:11/17/95</p>
-                        <p>Pet seen:3</p>
-                        <p><a href="#">View doctor's page</a></p>
+                <div class="container collapse pt-3" th:id="${'general'+ doctor.getUsername()}">
+                    <div class="row">
+                        <div class="container">
+                            <div class="row">
+                                <p class="col-2">Name:</p>
+                                <p class="col-10" th:text="${doctor.getUsername()}"></p>
+                            </div>
+                            <!-- Button trigger modal -->
+                            <button type="button" class="btn btn-success" data-toggle="modal" th:attr="data-target='#shareModal'+${doctor.getUsername()}">
+                                Share Pet Information
+                            </button>
+                            <!-- Modal -->
+                            <div class="modal fade" th:id="${'shareModal'+doctor.getUsername()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='shareModalLabel'+${doctor.getUsername()}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <form th:object="${pet}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/sharePet}" method="post" enctype="multipart/form-data">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="exampleModalLongTitle">Share Pet Information</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <div class="btn-group" data-toggle="buttons" th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
+                                                <label class="btn btn-primary active" th:attr="data-target='#general'+${pet.getName()}">
+                                                    <input type="checkbox"/><i th:text="${pet.getName()}"></i>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Share</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -86,7 +91,7 @@
 </div>
 <!-- Endsidebar -->
 <script>
-    $("#inputGroupFile01").change(function () {
+    $(".upload-file").change(function () {
         var label = $(this).next();
         var index = $(this).val().lastIndexOf("\\");
         label.text($(this).val().substring(index+1));

@@ -95,7 +95,7 @@ public class Controllers {
                 }
             }
             redirect.addFlashAttribute("userInfo", user);
-            return "redirect:/" + user.getType() + "/" + user.getId();
+            return "redirect:/" + "client" + "/" + user.getId();
         }
         redirect.addFlashAttribute("org.springframework.validation.BindingResult.loginInfo",result);
         redirect.addFlashAttribute("loginInfo",login);
@@ -289,8 +289,21 @@ public class Controllers {
                                  ModelMap model) {
         if(user !=null){
             model.addAttribute("userInfo",user);
+            model.addAttribute("doctorList", userRepo.findUserByType("doctor"));
             return "doctorview";
         }
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/{type}/{id}/pets/sharePet", method = RequestMethod.POST)
+    public String sharePet(@PathVariable("type") String type,
+                         @PathVariable("userId") int userId,
+                         @PathVariable("doctorId") int doctorId,
+                         @ModelAttribute("petInfo") PetInfo petInfo,
+                         ModelMap model) {
+
+        User doctor = userRepo.findUserById(doctorId);
+
         return "redirect:/";
     }
 }
