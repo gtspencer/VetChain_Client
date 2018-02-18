@@ -55,22 +55,50 @@
                                 <p class="col-10" th:text="${doctor.getUsername()}"></p>
                             </div>
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn btn-success" data-toggle="modal" th:attr="data-target='#shareModal'+${doctor.getUsername()}">
+                            <button type="button" class="btn btn-success" data-toggle="modal" th:attr="data-target='#shareModal'+${doctor.getId()}">
                                 Share Pet Information
                             </button>
                             <!-- Modal -->
+                            <div class="modal fade" th:id="${'shareModal'+doctor.getId()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='shareModalLabel'+${doctor.getId()}" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <form th:object="${share}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/{id}/doctors/sharePet(id=${doctor.getId()})}">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" th:id="${'shareModalLabel'+doctor.getId()}">Share Pet Information</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="text" value="petName" name="petName" id="petName"/>
+                                            <input type="text" th:value="${doctor.getUsername()}" name="doctorName" id="doctorName"/>
+                                                <!--
+                                                <div name="petName" id="petName" th:value="${pet.getName()}"></div>
+                                                <div name="doctorName" id="doctorName" th:value="${doctor.getUsername()}"></div>
+
+                                                <i th:text="${pet.getName()}"></i>
+                                                -->
+                                            </button>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="submit" class="btn btn-secondary" data-dismiss="modal">Submit</button>
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--
                             <div class="modal fade" th:id="${'shareModal'+doctor.getUsername()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='shareModalLabel'+${doctor.getUsername()}" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
-                                    <form th:object="${pet}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/sharePet}" method="post" enctype="multipart/form-data">
+                                    <form class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/{id}/sharePet(id=${pet.getId()})}" method="post" enctype="multipart/form-data">
                                         <div class="modal-header">
-                                            <h5 class="modal-title" id="exampleModalLongTitle">Share Pet Information</h5>
+                                            <h5 class="modal-title" th:id="${'shareModalLabel'+pet.getId()}">Share Pet Information</h5>
                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                 <span aria-hidden="true">&times;</span>
                                             </button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="btn-group" data-toggle="buttons" th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
-                                                <label class="btn btn-primary active" th:attr="data-target='#general'+${pet.getName()}">
+                                                <label class="btn btn-primary active" th:attr="data-target='#general'+${pet.getName()}" th:field="*{pet}">
                                                     <input type="checkbox"/><i th:text="${pet.getName()}"></i>
                                                 </label>
                                             </div>
@@ -82,6 +110,7 @@
                                     </form>
                                 </div>
                             </div>
+                            -->
                         </div>
                     </div>
                 </div>

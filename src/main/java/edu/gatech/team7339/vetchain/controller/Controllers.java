@@ -3,6 +3,7 @@ package edu.gatech.team7339.vetchain.controller;
 import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
+import edu.gatech.team7339.vetchain.bindingObject.Share;
 import edu.gatech.team7339.vetchain.model.Pet;
 import edu.gatech.team7339.vetchain.model.PetMedRecord;
 import edu.gatech.team7339.vetchain.model.PetXrayUrl;
@@ -295,15 +296,19 @@ public class Controllers {
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/{type}/{id}/pets/sharePet", method = RequestMethod.POST)
+    @RequestMapping(value = "/{type}/{id}/doctors/sharePet", method = RequestMethod.POST)
     public String sharePet(@PathVariable("type") String type,
-                         @PathVariable("userId") int userId,
-                         @PathVariable("doctorId") int doctorId,
-                         @ModelAttribute("petInfo") PetInfo petInfo,
+                         @PathVariable("Id") String userId,
+                         @RequestParam("petName") String petName,
+                         @RequestParam("doctorName") String doctorName,
+                         @ModelAttribute("share") Share share,
                          ModelMap model) {
+        System.out.println(petName);
+        User doctor = userRepo.findUserByUsername(doctorName);
+        Pet pet = petRepo.findPetByName(petName);
+        petRepo.findPetByName(petName).setDoctor(doctor);
+        doctor.getPetsDoc().add(pet);
 
-        User doctor = userRepo.findUserById(doctorId);
-
-        return "redirect:/";
+        return "redirect:/"+type+"/"+userId+"/doctors";
     }
 }

@@ -30,6 +30,9 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Pet> pets;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Pet> petsDoc;
+
     public User(){
         this.type = "client";
     }
@@ -40,6 +43,7 @@ public class User {
         this.phone = phone;
         this.type = "client";
         pets = new ArrayList<>();
+        petsDoc = new ArrayList<>();
         dateCreated = new Date();
     }
 
@@ -50,6 +54,10 @@ public class User {
     public List<Pet> getPets() {
         return pets;
     }
+
+    public List<Pet> getPetsDoc() { return petsDoc; }
+
+    public void setPetsDoc(List<Pet> petsDoc) { this.petsDoc = petsDoc; }
 
     public int getTotalPets() {
         return pets.size();

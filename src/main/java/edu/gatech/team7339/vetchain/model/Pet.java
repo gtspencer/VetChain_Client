@@ -17,6 +17,9 @@ public class Pet {
     @ManyToOne
     @JoinColumn(name = "USER_ID")
     private User user;
+    @ManyToOne
+    @JoinColumn(name = "DOCTOR_ID")
+    private User doctor;
     @Column(nullable = false,name = "PET_NAME")
     private String name;
     @Column(nullable = false, name = "BREED")
@@ -125,6 +128,14 @@ public class Pet {
 
     public User getUser() {
         return user;
+    }
+
+    public void setDoctor(User doctor) {
+        this.user = user;
+    }
+
+    public User getDoctor() {
+        return doctor;
     }
 
     public void setName(String name) {

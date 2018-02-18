@@ -12,4 +12,5 @@ public interface PetRepo extends CrudRepository<Pet,Long> {
     public Pet findPetByUserIdAndId(int userId, int petId);
     public Pet findPetById(int petId);
     public Pet findPetByNameAndDob(String name, String dob);
+    public Pet findPetByName(String name);
 }
