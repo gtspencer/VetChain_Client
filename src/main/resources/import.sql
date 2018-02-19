@@ -9,7 +9,3 @@ INSERT INTO user(user_id,user_name,password,email,phone,account_type,date_create
 INSERT INTO user(user_id,user_name,password,email,phone,account_type,date_created) VALUES (6,"doctor4","123","doctor4@gmail.com","6789331237","doctor","2018-1-7");
 
 /*PET TABLE */
-
-INSERT INTO pet(pet_id, avatar_url, breed, dob, gender, insrance_carrier, insurance_num, license, microchip_num, pet_name, weight,user_id) VALUES(1,"/static/images/avatar.png","Chihuahua","2017-3-3","Male","INSCARRIER","1234","1234","1234","Doggo","6 lbs",2);
-INSERT INTO pet(pet_id, avatar_url, breed, dob, gender, insrance_carrier, insurance_num, license, microchip_num, pet_name, weight,user_id) VALUES(2,"/static/images/animal3.png","Squirrle","2016-4-3","Female","INSCARRIER2","1234","1234","1234","Nick","100 lbs",2);
-INSERT INTO pet(pet_id, avatar_url, breed, dob, gender, insrance_carrier, insurance_num, license, microchip_num, pet_name, weight,user_id) VALUES(3,"/static/images/animal2.gif","Unknown","2015-2-5","Male","INSCARRIER3","1234","1234","1234","Jew","10 lbs",2);

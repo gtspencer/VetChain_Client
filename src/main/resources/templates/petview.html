@@ -354,7 +354,7 @@
                                     <div class="container-fluid">
                                         <div class="row pt-2 ">
                                             <h5 th:text="'Upload date:'+${xray.getDate()}"></h5>
-                                            <a class="btn btn-success btn-sm d-inline ml-auto" th:href="@{${xray.getUrl()}}" role="button"><i class="fa fa-angle-double-down" ></i> Download</a>
+                                            <a class="btn btn-success btn-sm d-inline ml-auto" th:href="@{${xray.getUrl()}}" role="button" download><i class="fa fa-angle-double-down" ></i> Download</a>
                                         </div>
                                         <div class="row pt-1">
                                             <embed th:src="${!xray.getUrl().isEmpty()} ? ${xray.getUrl()}" type="application/pdf" class="w-100" height="500px">
