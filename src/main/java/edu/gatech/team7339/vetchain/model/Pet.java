@@ -2,10 +2,7 @@ package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "PET")
@@ -14,9 +11,14 @@ public class Pet {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "PET_ID")
     private int id;
-    @ManyToOne
-    @JoinColumn(name = "USER_ID")
-    private User user;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "USER_PET",
+                joinColumns = @JoinColumn(name = "PET_ID",referencedColumnName = "PET_ID"),
+                inverseJoinColumns = @JoinColumn(name = "USER_ID",referencedColumnName = "USER_ID")
+    )
+    private Set<User> users;
+
     @Column(nullable = false,name = "PET_NAME")
     private String name;
     @Column(nullable = false, name = "BREED")
@@ -35,9 +37,10 @@ public class Pet {
     private String license;
 
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
-    private List<PetXrayUrl> xrayUrls;
+    private Set<PetXrayUrl> xrayUrls;
+
     @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
-    private List<PetMedRecord> medRecordUrls;
+    private Set<PetMedRecord> medRecordUrls;
 
     @Column(name = "AVATAR_URL")
     private String avatarUrl;
@@ -45,10 +48,10 @@ public class Pet {
     @Column(name ="DOB")
     public String dob;
 
-    public Pet(User user){
-        this.user = user;
-        xrayUrls = new ArrayList<>();
-        medRecordUrls = new ArrayList<>();
+    public Pet(Set<User> users){
+        this.users = users;
+        xrayUrls = new HashSet<>();
+        medRecordUrls = new HashSet<>();
     }
     public void setWeight(String weight) {
         this.weight = weight;
@@ -99,8 +102,9 @@ public class Pet {
     }
 
     public Pet(){
-        xrayUrls= new ArrayList<>();
-        medRecordUrls=new ArrayList<>();
+        xrayUrls= new HashSet<>();
+        medRecordUrls=new HashSet<>();
+        users = new HashSet<>();
     }
 
     public void setDob(String dob) {
@@ -119,12 +123,12 @@ public class Pet {
         return id;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUsers(Set<User> users) {
+        this.users = users;
     }
 
-    public User getUser() {
-        return user;
+    public Set<User> getUsers() {
+        return users;
     }
 
     public void setName(String name) {
@@ -148,11 +152,11 @@ public class Pet {
         return Calendar.getInstance().get(Calendar.YEAR) - year;
     }
 
-    public List<PetMedRecord> getMedRecordUrls() {
+    public Set<PetMedRecord> getMedRecordUrls() {
         return medRecordUrls;
     }
 
-    public List<PetXrayUrl> getXrayUrls() {
+    public Set<PetXrayUrl> getXrayUrls() {
         return xrayUrls;
     }
 
@@ -164,11 +168,11 @@ public class Pet {
         this.avatarUrl = avatarUrl;
     }
 
-    public void setMedRecordUrls(List<PetMedRecord> medRecordUrls) {
+    public void setMedRecordUrls(Set<PetMedRecord> medRecordUrls) {
         this.medRecordUrls = medRecordUrls;
     }
 
-    public void setXrayUrls(List<PetXrayUrl> xrayUrls) {
+    public void setXrayUrls(Set<PetXrayUrl> xrayUrls) {
         this.xrayUrls = xrayUrls;
     }
 }

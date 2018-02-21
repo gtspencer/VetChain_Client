@@ -5,8 +5,9 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PetMedRecordRepo extends CrudRepository<PetMedRecord, Long> {
-    public List<PetMedRecord> findPetMedRecordsByPetId(int petId);
+    public Set<PetMedRecord> findPetMedRecordsByPetId(int petId);
 }

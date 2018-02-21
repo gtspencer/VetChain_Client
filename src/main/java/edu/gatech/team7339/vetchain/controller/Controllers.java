@@ -3,6 +3,7 @@ package edu.gatech.team7339.vetchain.controller;
 import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
+import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
 import edu.gatech.team7339.vetchain.model.Pet;
 import edu.gatech.team7339.vetchain.model.PetMedRecord;
 import edu.gatech.team7339.vetchain.model.PetXrayUrl;
@@ -75,25 +76,13 @@ public class Controllers {
      * @return
      */
     @RequestMapping(value = "/login", method = RequestMethod.POST)
-    public String processLogin(@Valid @ModelAttribute Login login,
+    public String processLogin(@Valid @ModelAttribute("loginInfo") Login login,
                                ModelMap model,
                                BindingResult result,
                                RedirectAttributes redirect) {
         loginValidator.validate(login,result);
         if(!result.hasErrors()){
             user = userRepo.findUserByUsernameAndPassword(login.getUsername(),login.getPassword());
-            user.setPets(petRepo.findPetsByUserId(user.getId()));
-            for (Pet pet: user.getPets()) {
-                pet.setUser(user);
-                pet.setXrayUrls(petXrayUrlRepo.findPetXrayUrlsByPetId(pet.getId()));
-                for(PetXrayUrl xrayUrl:pet.getXrayUrls()) {
-                    xrayUrl.setPet(pet);
-                }
-                pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
-                for(PetMedRecord medRecord: pet.getMedRecordUrls()){
-                    medRecord.setPet(pet);
-                }
-            }
             redirect.addFlashAttribute("userInfo", user);
             return "redirect:/" + user.getType() + "/" + user.getId();
         }
@@ -136,7 +125,7 @@ public class Controllers {
      */
     @RequestMapping("/logout")
     public String logout(ModelMap model) {
-        user = null;
+        user= null;
         return "redirect:/";
     }
 
@@ -156,8 +145,10 @@ public class Controllers {
                 model.addAttribute("userInfo", user);
                 model.addAttribute("petInfo",new PetInfo());
                 return "client_home";
-            } else {
-                return "redirect:/"; // Fix this for doctor
+            } else if(type.equalsIgnoreCase("doctor")){
+                return "doctor_home";
+            } else{
+                return "redirect:/";
             }
         }
         return "redirect:/";
@@ -189,6 +180,11 @@ public class Controllers {
                            @PathVariable("id") int id,
                            ModelMap model) {
         if(user != null) {
+            //Fetch Pet's Xray and Medical record for viewing
+            for (Pet pet: user.getPets()){
+                pet.setXrayUrls(petXrayUrlRepo.findPetXrayUrlsByPetId(pet.getId()));
+                pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
+            }
             model.addAttribute("userInfo", user);
             model.addAttribute("petInfo",new PetInfo());
             return "petview";
@@ -247,8 +243,8 @@ public class Controllers {
                          @RequestParam("gender") String gender,
                          @RequestParam("unit") String unit,
                          ModelMap model) {
-
-        Pet pet = new Pet(user);
+        Pet pet = new Pet();
+        pet.getUsers().add(user);
         pet.setName(petInfo.getName());
         pet.setBreed(petInfo.getBreed());
         pet.setGender(gender);
@@ -289,7 +285,30 @@ public class Controllers {
                                  ModelMap model) {
         if(user !=null){
             model.addAttribute("userInfo",user);
+            model.addAttribute("doctors", userRepo.findAllByType("doctor"));
+            model.addAttribute("sharePetInfo",new SharePetInfo(user.getTotalPets()));
             return "doctorview";
+        }
+        return "redirect:/";
+    }
+    @RequestMapping(value = "/{type}/{userId}/doctors/{docId}/share",method = RequestMethod.POST)
+    public String sharePet(@PathVariable("type") String type,
+                           @PathVariable("userId") int userId,
+                           @PathVariable("docId") int docId,
+                           @ModelAttribute("sharePetInfo") SharePetInfo sharePetInfo,
+                           ModelMap model){
+        if(user != null) {
+            User doctor = userRepo.findUserById(docId);
+            for (Pet pet : user.getPets()) {
+                for (String id : sharePetInfo.getPetIds()) {
+                    if (id != null && pet.getId() == Integer.parseInt(id)) {
+                        pet.getUsers().add(doctor);
+                        doctor.getPets().add(pet);
+                    }
+                }
+            }
+            userRepo.save(doctor);
+            return "redirect:/"+type+"/"+userId+"/doctors";
         }
         return "redirect:/";
     }
