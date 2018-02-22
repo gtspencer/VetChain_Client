@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/static/css/history_style.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
 </head>
@@ -45,11 +44,11 @@
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="filter-addon"><i class="fas fa-filter"></i></span>
                 </div>
-                <input type="text" class="form-control" aria-describedby="filter-addon" onkeyup="searchTable()" placeholder="Search for a name, keyword, or date. . .">
+                <input type="text" class="form-control" id="myInput" aria-describedby="filter-addon" onkeyup="searchTable()" placeholder="Search for a name, keyword, or date. . .">
             </div>
-            <table id="myTable">
+            <table id="myTable" class="table table-striped">
                 <thead>
-                <tr class="header">
+                <tr class="header thead-dark">
                     <th style="width:25%;">Name</th>
                     <th style="width:60%;">Info</th>
                     <th style="width:15%;">Date</th>

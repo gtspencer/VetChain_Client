@@ -5,9 +5,10 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public interface PetXrayUrlRepo extends CrudRepository<PetXrayUrl,Long>{
-    public List<PetXrayUrl> findPetXrayUrlsByPetId(int petId);
+    public Set<PetXrayUrl> findPetXrayUrlsByPetId(int petId);
 
 }

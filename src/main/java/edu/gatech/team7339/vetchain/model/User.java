@@ -3,9 +3,7 @@ package edu.gatech.team7339.vetchain.model;
 import javax.persistence.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Date;
+import java.util.*;
 
 @Entity
 @Table(name = "USER")
@@ -14,21 +12,29 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID")
     private Integer id;
+
     @Column(nullable = false, unique = true, name = "USER_NAME")
     private String username;
+
     @Column(nullable = false, name = "PASSWORD")
     private String password;
+
     @Column(nullable = false, name = "EMAIL")
     private String email;
+
     @Column(nullable = false, name = "PHONE")
     private String phone;
+
     @Column(nullable = false, name = "ACCOUNT_TYPE")
     private String type;
+
     @Temporal(TemporalType.DATE)
     @Column(nullable = false, name = "DATE_CREATED")
     private Date dateCreated;
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-    private List<Pet> pets;
+
+    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER,cascade = {
+            CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<Pet> pets;
 
     public User(){
         this.type = "client";
@@ -39,7 +45,7 @@ public class User {
         this.email = email;
         this.phone = phone;
         this.type = "client";
-        pets = new ArrayList<>();
+        pets = new HashSet<>();
         dateCreated = new Date();
     }
 
@@ -47,7 +53,7 @@ public class User {
         return dateCreated;
     }
 
-    public List<Pet> getPets() {
+    public Set<Pet> getPets() {
         return pets;
     }
 
@@ -55,7 +61,7 @@ public class User {
         return pets.size();
     }
 
-    public void setPets(List<Pet> pets) {
+    public void setPets(Set<Pet> pets) {
         this.pets = pets;
     }
 

@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
-    <link rel="stylesheet" type="text/css" th:href="@{/static/css/petview.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/doctorview.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
     <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
 </head>
@@ -38,45 +38,58 @@
 <div class="container-fluid pl-4 bg-light" id="main">
     <!-- Overview header -->
     <div class="row pt-5">
-        <h5><b><i class="fas fa-user-md"></i> My Doctor</b></h5>
+        <h5><b><i class="fas fa-user-md"></i> My Doctors</b></h5>
     </div>
-    <div class="row p-3 pet-card">
+    <div class="row p-3 doctor-card">
         <div class="container">
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-1">
+            <div class="row pb-1" th:unless="${doctors.isEmpty()}" th:each="doctor:${doctors}">
+                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" th:attr="data-target='#dr-info-'+${doctor.getId()}">
                     <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">Dr. Octopus</h4>
+                    <h4 class="d-inline pl-5" th:text="' '+ ${doctor.getUsername()}"></h4>
                 </button>
-                <div class="container p-1 collapse" id="dr-info-1">
-                    <div class="card card-block">
+                <div class="container pt-2 collapse" th:id="'dr-info-'+${doctor.getId()}">
+                    <div class="row">
                         <p>Access Since:11/17/95</p>
-                        <p>Pet seen:3</p>
-                        <p><a href="#">View doctor's page</a></p>
+                        <button class="btn btn-success d-inline ml-auto" th:attr="data-target='#doctor'+ ${doctor.getId()}" data-toggle="modal"><i class="fas fa-share-square"></i> Share</button>
+                        <!-- Share modal -->
+                        <div class="modal fade" th:id="${'doctor'+doctor.getId()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='shareModalLabel'+${doctor.getId()}" aria-hidden="true">
+                            <div class="modal-dialog" role="document">
+                                <form th:object="${sharePetInfo}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/{id}/share(id=${doctor.getId()})}" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" th:id="${'shareModalLabel'+ doctor.getId()}">Share Pet Information</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="container">
+                                            <table class="table table-hover">
+                                                <tr th:each="pet, stat : ${userInfo.getPets()}">
+                                                    <td>
+                                                        <input type="checkbox" th:field = "*{petIds[__${stat.index}__]}" th:value="${pet.getId()}">
+                                                    </td>
+                                                    <td>
+                                                        <img th:src="${pet.getAvatarUrl()}" class="img-thumbnail" height="50px" width="50px">
+                                                    </td>
+                                                    <td>
+                                                        <p th:text="${pet.getName()}"></p>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Share</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-target="#dr-info-2" data-toggle="collapse">
-                    <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">D.r Strange</h4>
-                </button>
-                <div class="container p-1 collapse" id="dr-info-2">
-                    <div class="card card-block">
-                        <p>Access Since:11/17/95</p>
+                    <div class="row">
                         <p>Pet seen:3</p>
-                        <p><a href="#">View doctor's page</a></p>
                     </div>
-                </div>
-            </div>
-            <div class="row pb-1">
-                <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" data-target="#dr-info-3">
-                    <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5">Dr. Doom</h4>
-                </button>
-                <div class="container p-1 collapse" id="dr-info-3">
-                    <div class="card card-block">
-                        <p>Access Since:11/17/95</p>
-                        <p>Pet seen:3</p>
+                    <div class="row">
                         <p><a href="#">View doctor's page</a></p>
                     </div>
                 </div>
@@ -85,13 +98,6 @@
     </div>
 </div>
 <!-- Endsidebar -->
-<script>
-    $("#inputGroupFile01").change(function () {
-        var label = $(this).next();
-        var index = $(this).val().lastIndexOf("\\");
-        label.text($(this).val().substring(index+1));
-    });
-</script>
 <script type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
 <script type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
