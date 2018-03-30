@@ -1,3 +1,4 @@
+package edu.gatech.team7339.vetchain.blockchain;
 import java.util.ArrayList;
 
 public class BlockChain {
