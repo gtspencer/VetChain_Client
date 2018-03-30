@@ -76,8 +76,9 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="username-addon-reg" aria-hidden="true"><i class="fas fa-user"></i></span>
                                 </div>
-                                <input type="text" th:classappend="${#fields.hasErrors('username')}? 'error'" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-reg" required/>
+                                <input type="text" id="reg_username" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-reg" required/>
                             </div>
+                            <p id="username-error"></p>
                             <!-- password -->
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">
@@ -91,6 +92,25 @@
                                     <span class="input-group-text" id="confirm-password-addon-reg" aria-hidden="true"><i class="fas fa-key"></i></span>
                                 </div>
                                 <input type="password" th:classappend="${#fields.hasErrors('password')}? 'error'" th:field="*{confirmPassword}" class="form-control" placeholder="Confirm Password" aria-label="Confirm Password" aria-describedby="confirm-password-addon-reg" required/>
+                            </div>
+                            <div class="form-row">
+                                <!-- Fullname -->
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="firstname-addon-reg" aria-hidden="true"><i class="fas fa-id-card"></i></span>
+                                        </div>
+                                        <input type="text" id="reg_firstname" th:field="*{firstname}" class="form-control" placeholder="Firstname" aria-label="Firstname" aria-describedby="firstname-addon-reg" required/>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="lastname-addon-reg" aria-hidden="true"><i class="fas fa-id-card"></i></span>
+                                        </div>
+                                        <input type="text" id="reg_lastname" th:field="*{lastname}" class="form-control" placeholder="Lastname" aria-label="Lastname" aria-describedby="lastname-addon-reg" required/>
+                                    </div>
+                                </div>
                             </div>
                             <!-- email -->
                             <div class="input-group mb-3">
@@ -148,5 +168,6 @@
     <script type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
     <script type="text/javascript" th:src="@{/static/js/login_register_toggle.js}"></script>
+    <script type="text/javascript" th:src="@{/static/js/reg_validator.js}"></script>
 </body>
 </html>

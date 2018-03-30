@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Client Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
+</head>
+
+<body>
+<!-- Sidebar/menu -->
+<div class="nav-side-menu">
+    <div class="brand">
+        <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
+        <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
+        <hr class="border border-success bg-sucess">
+    </div>
+    <i class="fa fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link active sidebar-option message" href="#"><span><i class="fas fa-book"></i></span> Overview</a>
+                <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/clients}"><span><i class="fas fa-users"></i></span> Client</a>
+                <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/doctors}"><span><i class="fas fa-user-md"></i></span> Doctor</a>
+                <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__/pets}"><span><i class="fas fa-paw"></i></span> Pets</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-clipboard"></i></span> Back Logs</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<div class="container-fluid pl-4" id="main">
+    <!-- Overview header -->
+    <div class="row pt-3">
+        <div class="container-fluid">
+            <h4>Overview</h4>
+            <hr class="border border-success bg-success">
+        </div>
+    </div>
+    <!-- Overview content-->
+    <div class="row pt-3">
+        <!--Overview content -->
+        <div class="col px-1">
+            <div class="container bg-danger text-white">
+                <div class="row pt-2">
+                    <div class="col">
+                        <div class="container text-left">
+                            <span><i class="fas fa-user-md fa-3x"></i></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container text-right">
+                            <h3 th:text="${doctorsInfo.size()}"></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="container text-center pt-5">
+                        <h3>Total Doctors</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col px-1">
+            <div class="container bg-success text-white">
+                <div class="row pt-2">
+                    <div class="col">
+                        <div class="container text-left">
+                            <span><i class="fas fa-paw fa-3x"></i></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container text-right">
+                            <h3 th:text="${petsInfo.size()}"></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="container text-center pt-5">
+                        <h3>Total Pets</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col px-1">
+            <div class="container bg-info text-white">
+                <div class="row pt-2">
+                    <div class="col">
+                        <div class="container text-left">
+                            <span><i class="fas fa-users fa-3x "></i></span>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="container text-right">
+                            <h3 th:text="${clientsInfo.size()}"></h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="container text-center pt-5">
+                        <h3>Total Clients</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Recent Activity Header -->
+    <div class="row pt-5">
+        <div class="container-fluid">
+            <h4>Recent Activity</h4>
+            <hr class="border border-success bg-success">
+        </div>
+    </div>
+    <!-- Recent Activities -->
+    <div class="row pt-2">
+        <div class="container-fluid">
+            <table class="table table-striped table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Date</th>
+                        <th>Activity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="activity : ${activities}">
+                        <td th:text="${activity.getDate()}"></td>
+                        <td th:text="${activity.getActivity()}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
+<script language="JavaScript" type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
+</body>
+</html>
