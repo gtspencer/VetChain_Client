@@ -5,6 +5,7 @@ import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
 import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
 import edu.gatech.team7339.vetchain.blockchain.Block;
+import edu.gatech.team7339.vetchain.blockchain.BlockChain;
 import edu.gatech.team7339.vetchain.blockchain.BlockUtil;
 import edu.gatech.team7339.vetchain.model.*;
 import edu.gatech.team7339.vetchain.repository.*;
@@ -23,7 +24,9 @@ import org.thymeleaf.expression.Lists;
 import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -171,6 +174,8 @@ public class Controllers {
                 // TODO: Save the blockchain to a file
 
                 userRepo.save(new User(reg.getFirstname()+" "+ reg.getLastname(),reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+
+                backupBlockchain(blockchain);
             }
         }
         return "redirect:/";
@@ -196,6 +201,19 @@ public class Controllers {
         userRepo.save(user);
         user= null;
         return "redirect:/";
+    }
+
+    public void backupBlockchain(LinkedList<Block> backupChain) {
+        BlockChain chainObject = new BlockChain();
+        chainObject.setChain(backupChain);
+        try {
+            FileOutputStream fos = new FileOutputStream("keep.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(chainObject);
+            fos.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
