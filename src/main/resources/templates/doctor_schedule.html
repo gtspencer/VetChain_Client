@@ -23,9 +23,9 @@
     <div class="menu-list">
         <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
             <nav class="nav nav-pills flex-column">
-                <a class="nav-link active sidebar-option message" th:href="@{'/doctor/'+${userInfo.getId()}}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option message" th:href="@{'/doctor/'+${userInfo.getId()}}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
                 <a class="nav-link sidebar-option" th:href="@{'/doctor/'+${userInfo.getId()}+'/pets'}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
-                <a class="nav-link sidebar-option" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fas fa-calendar"></i></span> Schedule</a>
+                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fas fa-calendar"></i></span> Schedule</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-history"></i></span> History</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
@@ -60,9 +60,7 @@
                                                 <span class="input-group-text" id="petName"><i class="fab fa-github-alt"></i></span>
                                             </div>
                                             <select th:field="*{petId}">
-                                                <!--/*/ <th:block th:each="pet : ${userInfo.getPets()}"> /*/-->
-                                                <option th:value="${pet.getId()}" th:text="${pet.getName()}"></option>
-                                                <!--/*/ </th:block> /*/-->
+                                                <option th:each="pet:${userInfo.getPets()}" th:value="${pet.getId()}" th:text="${pet.getName()}"></option>
                                             </select>
                                         </div>
                                     </div>
@@ -107,54 +105,55 @@
     <!--Schedule content -->
     <div class="row pt-3">
         <div class="table-responsive">
-            <table class="table table-bordered">
+            <table class="table table-bordered text-center text-middle">
                 <thead class="thead-dark">
                 <tr>
-                    <!--/*/ <th:block th:each = "day : ${daysOfWeek}"> /*/-->
-                    <th th:text="${day.toString()}"></th>
-                    <!--/*/ </th:block> /*/-->
+                    <th th:each="day:${daysOfWeek}">
+                        <div th:text="${day.get(0)}" ></div>
+                        <div th:text="${day.get(1)}"></div>
+                    </th>
                 </tr>
                 </thead>
                 <tbody>
                 <tr th:each="week:${schedule}">
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(0)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(1)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(2)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(3)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(4)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(5)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(6)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(7)}"> /*/-->
-                        <p th:text="${details}"></p>
+                        <div th:text="${details}"></div>
                         <!--/*/ </th:block> /*/-->
                     </td>
                 </tr>

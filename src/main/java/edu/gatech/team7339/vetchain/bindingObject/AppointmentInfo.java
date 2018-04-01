@@ -3,16 +3,16 @@ package edu.gatech.team7339.vetchain.bindingObject;
 import java.util.Date;
 
 public class AppointmentInfo {
-    private int petId;
-    private Date date;
-    private Date time;
+    private String petId;
+    private String date;
+    private String time;
     private String reason;
 
-    public void setTime(Date time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
-    public Date getTime() {
+    public String getTime() {
         return time;
     }
 
@@ -24,19 +24,19 @@ public class AppointmentInfo {
         return reason;
     }
 
-    public void setDate(Date date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
-    public Date getDate() {
+    public String getDate() {
         return date;
     }
 
-    public void setPetId(int petId) {
+    public void setPetId(String petId) {
         this.petId = petId;
     }
 
-    public int getPetId() {
+    public String getPetId() {
         return petId;
     }
 }

@@ -6,10 +6,7 @@ import edu.gatech.team7339.vetchain.model.Appointment;
 import edu.gatech.team7339.vetchain.model.Pet;
 import edu.gatech.team7339.vetchain.model.PetXrayUrl;
 import edu.gatech.team7339.vetchain.model.User;
-import edu.gatech.team7339.vetchain.repository.AppointmentRepo;
-import edu.gatech.team7339.vetchain.repository.PetMedRecordRepo;
-import edu.gatech.team7339.vetchain.repository.PetRepo;
-import edu.gatech.team7339.vetchain.repository.PetXrayUrlRepo;
+import edu.gatech.team7339.vetchain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -20,6 +17,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -47,7 +47,8 @@ public class DoctorControllers {
         return "error_page";
     }
     @RequestMapping(value = "/doctor/{userId}/pets", method = RequestMethod.GET)
-    public String showDoctorPets(ModelMap model){
+    public String showDoctorPets(   @PathVariable("userId") String userId,
+                                    ModelMap model){
         if(user != null){
             for(Pet pet : user.getPets()) {
                 pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
@@ -66,14 +67,20 @@ public class DoctorControllers {
             Date begin = new Date();
             Date end = new Date(begin.getTime() + 604800000);
             Set<Appointment> appointmentSet = appointmentRepo.findAllByDoctorIdAndDateBetweenOrderByTimeAsc(user.getDoctor().getId(),begin,end);
-            ArrayList<String> next7Days = new ArrayList<>();
-            next7Days.add("#");
+            ArrayList<ArrayList<String>> next7Days = new ArrayList<>();
+            ArrayList<String> day = new ArrayList<>();
+            day.add("#");
+            day.add("");
+            next7Days.add(day);
             long milisPerDay =  86400000;
             long time = begin.getTime();
             Calendar calendar = Calendar.getInstance();
             for(int i = 0; i < 7; i++) {
-                calendar.setTime(new Date(time+ i * milisPerDay));
-                next7Days.add(calendar.getDisplayName(Calendar.DAY_OF_WEEK,Calendar.LONG, Locale.getDefault()));
+                calendar.setTime(new Date(time + i * milisPerDay));
+                day = new ArrayList<>();
+                day.add(calendar.getDisplayName(Calendar.DAY_OF_WEEK,Calendar.LONG, Locale.getDefault()));
+                day.add((calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DAY_OF_MONTH));
+                next7Days.add(day);
             }
             ArrayList<ArrayList<ArrayList<String>>> schedule = new ArrayList<>();
             ArrayList<ArrayList<String>> appointments = new ArrayList<>();
@@ -93,7 +100,13 @@ public class DoctorControllers {
                     }
                     appointments.get(0).add(0, p.getTime().toString());
                 }
-                    int index = next7Days.indexOf(p.getDayOfWeek());
+                    int index = 0;
+                    for(ArrayList<String> d : next7Days){
+                        if(d.contains(p.getDayOfWeek())){
+                            break;
+                        }
+                        index++;
+                    }
                     ArrayList<String> appointmentDetails = new ArrayList<>();
                     appointmentDetails.add("Pet: " + p.getPet().getName());
                     appointmentDetails.add("Reason: " +p.getReason());
@@ -189,5 +202,29 @@ public class DoctorControllers {
             return "redirect:/doctor/" + userId + "/pets";
         }
         return "error_page";
+    }
+    @RequestMapping(value = "doctor/{docId}/schedule/addAppointment",method = RequestMethod.POST)
+    public String addAppointment(@PathVariable("docId") int docId,
+                                 @ModelAttribute("AppointmentInfo") AppointmentInfo newAppointment,
+                                 ModelMap model) {
+        if(user != null) {
+            try {
+                Appointment appointment = new Appointment();
+                DateFormat date = new SimpleDateFormat("yyyy-MM-dd");
+                DateFormat time = new SimpleDateFormat("hh:mm");
+                appointment.setDate(date.parse(newAppointment.getDate()));
+                appointment.setTime(time.parse(newAppointment.getTime()));
+                appointment.setDoctor(user.getDoctor());
+                appointment.setPet(petRepo.findPetById(Integer.parseInt(newAppointment.getPetId())));
+                appointment.setReason(newAppointment.getReason());
+                appointmentRepo.save(appointment);
+                return "redirect:/doctor/" + docId + "/schedule";
+            }catch (ParseException e){
+                System.out.println("Parse failed!");
+                return "error_page";
+            }
+        } else {
+            return "error_page";
+        }
     }
 }
