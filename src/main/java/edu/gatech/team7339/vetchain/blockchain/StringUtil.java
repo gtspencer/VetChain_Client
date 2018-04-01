@@ -1,8 +1,9 @@
 package edu.gatech.team7339.vetchain.blockchain;
+import java.io.Serializable;
 import java.security.MessageDigest;
 
 
-public class StringUtil {
+public class StringUtil implements Serializable {
 
     public static String applySha256(String input){
         try {

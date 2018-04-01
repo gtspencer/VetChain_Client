@@ -4,6 +4,9 @@ import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
 import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
+import edu.gatech.team7339.vetchain.blockchain.Block;
+import edu.gatech.team7339.vetchain.blockchain.BlockChain;
+import edu.gatech.team7339.vetchain.blockchain.BlockUtil;
 import edu.gatech.team7339.vetchain.model.*;
 import edu.gatech.team7339.vetchain.repository.*;
 import edu.gatech.team7339.vetchain.validator.LoginValidator;
@@ -21,7 +24,9 @@ import org.thymeleaf.expression.Lists;
 import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -33,6 +38,10 @@ import java.util.*;
 
 @Controller
 public class Controllers {
+    public BlockUtil blockUtil = new BlockUtil();
+    private static LinkedList<Block> blockchain = new LinkedList<>();
+
+
     private User user;
     @Autowired
     UserRepo userRepo;
@@ -61,6 +70,9 @@ public class Controllers {
         if(!model.containsAttribute("regInfo")) {
             model.addAttribute("regInfo", new Register());
         }
+
+        // Load blockchain from the file
+
         return "index";
     }
 
@@ -77,16 +89,38 @@ public class Controllers {
                                ModelMap model,
                                BindingResult result,
                                RedirectAttributes redirect) {
-        loginValidator.validate(login,result);
-        if(!result.hasErrors()){
-            user = userRepo.findUserByUsernameAndPassword(login.getUsername(),login.getPassword());
-            user.setPets(petRepo.findAllByUsers(user));
-            if(user.getLastLogin() == null) {
-                user.setLastLogin(new Date());
+
+
+        // If block ID in chain then set login values to username and pass
+
+
+        String userHash = blockUtil.calculateHash(login.getUsername() + login.getPassword());
+        Boolean hashValid = false;
+
+        // TODO: Pull and read the blockchain file
+
+        for (int i = 0; i < blockchain.size(); i++) {
+            if (userHash.equals(blockchain.get(i).hash)) {
+                hashValid = true;
+                System.out.printf("Username and password in blockchain: %s\n", userHash);
             }
-            redirect.addFlashAttribute("userInfo", user);
-            return "redirect:/" + user.getType()+"/"+user.getId();
         }
+
+        if (hashValid) {
+            loginValidator.validate(login,result);
+            if(!result.hasErrors()) {
+
+                user = userRepo.findUserByUsernameAndPassword(login.getUsername(), login.getPassword());
+                user.setPets(petRepo.findAllByUsers(user));
+                if (user.getLastLogin() == null) {
+                    user.setLastLogin(new Date());
+                }
+                redirect.addFlashAttribute("userInfo", user);
+                return "redirect:/" + user.getType() + "/" + user.getId();
+            }
+        }
+
+        System.out.println("Username and password not in blockchain\n");
         redirect.addFlashAttribute("org.springframework.validation.BindingResult.loginInfo",result);
         redirect.addFlashAttribute("loginInfo",login);
         return "redirect:/";
@@ -125,12 +159,23 @@ public class Controllers {
         if(user != null) {
             return "redirect:/";//Fix this later
         } else {
+
             registerValidator.validate(reg,result);
             if(result.hasErrors()) {
                 redirect.addFlashAttribute("org.springframework.BindingResult.regInfo",result);
                 redirect.addFlashAttribute("regInfo",reg);
             } else {
+
+                if (blockchain.size() == 0) {
+                    blockchain.add(new Block("root", ""));
+                }
+                // TODO: Load the blockchain
+                blockchain.add(new Block((reg.getUsername() + reg.getPassword()), blockchain.get(blockchain.size()-1).hash));
+                // TODO: Save the blockchain to a file
+
                 userRepo.save(new User(reg.getFirstname()+" "+ reg.getLastname(),reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+
+                backupBlockchain(blockchain);
             }
         }
         return "redirect:/";
@@ -156,6 +201,19 @@ public class Controllers {
         userRepo.save(user);
         user= null;
         return "redirect:/";
+    }
+
+    public void backupBlockchain(LinkedList<Block> backupChain) {
+        BlockChain chainObject = new BlockChain();
+        chainObject.setChain(backupChain);
+        try {
+            FileOutputStream fos = new FileOutputStream("keep.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(chainObject);
+            fos.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
     @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
