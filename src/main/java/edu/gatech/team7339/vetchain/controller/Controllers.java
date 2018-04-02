@@ -4,14 +4,11 @@ import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
 import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
-import edu.gatech.team7339.vetchain.model.Pet;
-import edu.gatech.team7339.vetchain.model.PetMedRecord;
-import edu.gatech.team7339.vetchain.model.PetXrayUrl;
-import edu.gatech.team7339.vetchain.model.User;
-import edu.gatech.team7339.vetchain.repository.PetMedRecordRepo;
-import edu.gatech.team7339.vetchain.repository.PetRepo;
-import edu.gatech.team7339.vetchain.repository.PetXrayUrlRepo;
-import edu.gatech.team7339.vetchain.repository.UserRepo;
+import edu.gatech.team7339.vetchain.blockchain.Block;
+import edu.gatech.team7339.vetchain.blockchain.BlockChain;
+import edu.gatech.team7339.vetchain.blockchain.BlockUtil;
+import edu.gatech.team7339.vetchain.model.*;
+import edu.gatech.team7339.vetchain.repository.*;
 import edu.gatech.team7339.vetchain.validator.LoginValidator;
 import edu.gatech.team7339.vetchain.validator.RegisterValidator;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +19,14 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.expression.Lists;
 
 import javax.validation.Valid;
 import javax.xml.crypto.Data;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,10 +34,14 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 @Controller
 public class Controllers {
+    public BlockUtil blockUtil = new BlockUtil();
+    private static LinkedList<Block> blockchain = new LinkedList<>();
+
+
     private User user;
     @Autowired
     UserRepo userRepo;
@@ -51,6 +55,8 @@ public class Controllers {
     LoginValidator loginValidator;
     @Autowired
     RegisterValidator registerValidator;
+    @Autowired
+    RecentActivityRepo activityRepo;
     /**
      * Login and Register Page
      * @param model
@@ -64,6 +70,9 @@ public class Controllers {
         if(!model.containsAttribute("regInfo")) {
             model.addAttribute("regInfo", new Register());
         }
+
+        // Load blockchain from the file
+
         return "index";
     }
 
@@ -80,17 +89,60 @@ public class Controllers {
                                ModelMap model,
                                BindingResult result,
                                RedirectAttributes redirect) {
-        loginValidator.validate(login,result);
-        if(!result.hasErrors()){
-            user = userRepo.findUserByUsernameAndPassword(login.getUsername(),login.getPassword());
-            redirect.addFlashAttribute("userInfo", user);
-            return "redirect:/" + user.getType() + "/" + user.getId();
+
+
+        // If block ID in chain then set login values to username and pass
+
+
+        String userHash = blockUtil.calculateHash(login.getUsername() + login.getPassword());
+        Boolean hashValid = false;
+
+        // TODO: Pull and read the blockchain file
+
+        for (int i = 0; i < blockchain.size(); i++) {
+            if (userHash.equals(blockchain.get(i).hash)) {
+                hashValid = true;
+                System.out.printf("Username and password in blockchain: %s\n", userHash);
+            }
         }
+
+        if (hashValid) {
+            loginValidator.validate(login,result);
+            if(!result.hasErrors()) {
+
+                user = userRepo.findUserByUsernameAndPassword(login.getUsername(), login.getPassword());
+                user.setPets(petRepo.findAllByUsers(user));
+                if (user.getLastLogin() == null) {
+                    user.setLastLogin(new Date());
+                }
+                redirect.addFlashAttribute("userInfo", user);
+                return "redirect:/" + user.getType() + "/" + user.getId();
+            }
+        }
+
+        System.out.println("Username and password not in blockchain\n");
         redirect.addFlashAttribute("org.springframework.validation.BindingResult.loginInfo",result);
         redirect.addFlashAttribute("loginInfo",login);
         return "redirect:/";
     }
 
+    /**
+     *
+     * @param model
+     * @return
+     */
+    @RequestMapping(value = "/admin", method = RequestMethod.GET)
+    public String showAdminPage(ModelMap model){
+        if(user != null) {
+            model.addAttribute("userInfo", user);
+            model.addAttribute("doctorsInfo", userRepo.findAllByType("doctor"));
+            model.addAttribute("clientsInfo", userRepo.findAllByType("client"));
+            model.addAttribute("petsInfo", petRepo.findAll());
+            model.addAttribute("activities", activityRepo.findAll());
+            return "admin_home";
+        }
+        return "redirect:/";
+    }
     /**
      * Register user
      * @param reg
@@ -107,17 +159,38 @@ public class Controllers {
         if(user != null) {
             return "redirect:/";//Fix this later
         } else {
+
             registerValidator.validate(reg,result);
             if(result.hasErrors()) {
                 redirect.addFlashAttribute("org.springframework.BindingResult.regInfo",result);
                 redirect.addFlashAttribute("regInfo",reg);
             } else {
-                userRepo.save(new User(reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+
+                if (blockchain.size() == 0) {
+                    blockchain.add(new Block("root", ""));
+                }
+                // TODO: Load the blockchain
+                blockchain.add(new Block((reg.getUsername() + reg.getPassword()), blockchain.get(blockchain.size()-1).hash));
+                // TODO: Save the blockchain to a file
+
+                userRepo.save(new User(reg.getFirstname()+" "+ reg.getLastname(),reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+
+                backupBlockchain(blockchain);
             }
         }
         return "redirect:/";
     }
-
+    @RequestMapping(value = "/register/validator/username", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean usernameValidation(@RequestParam("username") String username) {
+        return userRepo.existsUserByUsername(username);
+    }
+    @RequestMapping(value = "/register/vallidator/password", method = RequestMethod.POST)
+    @ResponseBody
+    public boolean passwordValidator(@RequestParam("password") String password,
+                                     @RequestParam("confirmPassword") String confirmPassword){
+        return password.equals(confirmPassword);
+    }
     /**
      * Logout
      * @param model
@@ -125,33 +198,22 @@ public class Controllers {
      */
     @RequestMapping("/logout")
     public String logout(ModelMap model) {
+        userRepo.save(user);
         user= null;
         return "redirect:/";
     }
 
-    /**
-     * User's homepage
-     * @param type
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/{type}/{id}", method = RequestMethod.GET)
-    public String showHomePage(@PathVariable("type") String type,
-                               @PathVariable("id") int id,
-                               ModelMap model) {
-        if (user != null) {
-            if (type.equalsIgnoreCase("client")) {
-                model.addAttribute("userInfo", user);
-                model.addAttribute("petInfo",new PetInfo());
-                return "client_home";
-            } else if(type.equalsIgnoreCase("doctor")){
-                return "doctor_home";
-            } else{
-                return "redirect:/";
-            }
+    public void backupBlockchain(LinkedList<Block> backupChain) {
+        BlockChain chainObject = new BlockChain();
+        chainObject.setChain(backupChain);
+        try {
+            FileOutputStream fos = new FileOutputStream("keep.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeObject(chainObject);
+            fos.close();
+        } catch (Exception e) {
+            System.out.println(e);
         }
-        return "redirect:/";
     }
 
     @RequestMapping(value = "/{type}/{id}/search", method = RequestMethod.GET)
@@ -168,148 +230,7 @@ public class Controllers {
         return "redirect:/";
     }
 
-    /**
-     * Client's pet view
-     * @param type
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping("/{type}/{id}/pets")
-    public String showPets(@PathVariable("type") String type,
-                           @PathVariable("id") int id,
-                           ModelMap model) {
-        if(user != null) {
-            //Fetch Pet's Xray and Medical record for viewing
-            for (Pet pet: user.getPets()){
-                pet.setXrayUrls(petXrayUrlRepo.findPetXrayUrlsByPetId(pet.getId()));
-                pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
-            }
-            model.addAttribute("userInfo", user);
-            model.addAttribute("petInfo",new PetInfo());
-            return "petview";
-        }
-        return "redirect:/";
-    }
 
-    /**
-     * Upload Xray images
-     * @param type
-     * @param id
-     * @param petId
-     * @param file
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/{type}/{id}/pets/{petId}/addXray",method = RequestMethod.POST)
-    public String showPets(@PathVariable("type") String type,
-                           @PathVariable("id") Integer id,
-                           @PathVariable("petId") Integer petId,
-                           @RequestParam("xrayFile")MultipartFile file,
-                           ModelMap model) {
-        Pet pet = null;
-        for (Pet p: user.getPets()) {
-            if(p.getId() == petId) {
-                pet = p;
-                break;
-            }
-        }
-        if (!file.isEmpty() && pet != null) {
-            String name = file.getOriginalFilename();
-            try {
-                Date date = new Date();
-                byte[] bytes = file.getBytes();
-                Path path = Paths.get("/files",id.toString(),petId.toString(),Long.toString(date.getTime()),name);
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
-                PetXrayUrl xray = new PetXrayUrl();
-                xray.setPet(pet);
-                xray.setDate(date);
-                xray.setUrl("/images/"+id.toString()+"/"+petId.toString()+"/"+Long.toString(date.getTime())+"/"+name);
-                pet.getXrayUrls().add(xray);
-                petXrayUrlRepo.save(xray);
-                petRepo.save(pet);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return "redirect:/"+type+"/"+id+"/pets";
-    }
 
-    @RequestMapping(value = "/{type}/{id}/pets/addPet", method = RequestMethod.POST)
-    public String addPet(@PathVariable("type") String type,
-                         @PathVariable("id") String userId,
-                         @ModelAttribute("petInfo") PetInfo petInfo,
-                         @RequestParam("gender") String gender,
-                         @RequestParam("unit") String unit,
-                         ModelMap model) {
-        Pet pet = new Pet();
-        pet.getUsers().add(user);
-        pet.setName(petInfo.getName());
-        pet.setBreed(petInfo.getBreed());
-        pet.setGender(gender);
-        pet.setInsuranceCarrier(petInfo.getInsCarrier().isEmpty()? "Unknown":petInfo.getInsCarrier());
-        pet.setLicense(petInfo.getLicense().isEmpty()? "Unknown" : petInfo.getLicense());
-        pet.setInsuranceNum(petInfo.getInsNum().isEmpty()? "Unknown" : petInfo.getInsNum());
-        pet.setDob(petInfo.getDob());
-        pet.setWeight(petInfo.getWeight() + " " + unit);
-        pet.setMicrochipNum(petInfo.getMicrochip().isEmpty()? "Unknown" : petInfo.getMicrochip());
-        petRepo.save(pet);
-        pet = petRepo.findPetByNameAndDob(pet.getName(), pet.getDob());
-        if (!petInfo.getAvatarUrl().isEmpty()) {
-            String avatarFileName = petInfo.getAvatarUrl().getOriginalFilename();
-            try {
-                byte[] bytes = petInfo.getAvatarUrl().getBytes();
-                Path path = Paths.get("/files", userId, Integer.toString(pet.getId()), "avatar", avatarFileName);
-                Files.createDirectories(path.getParent());
-                Files.write(path, bytes);
-                pet.setAvatarUrl("/images/" + userId + "/" + pet.getId() + "/avatar/" + avatarFileName);
-            } catch (IOException e) {
-                pet.setAvatarUrl("/static/images/avatar.png");
-            }
-            petRepo.save(pet);
-            user.getPets().add(pet);
-        }
-        return "redirect:/"+type+"/"+userId+"/pets";
-    }
-    /**
-     * Client's doctor view
-     * @param type
-     * @param id
-     * @param model
-     * @return
-     */
-    @RequestMapping(value = "/{type}/{id}/doctors",method = RequestMethod.GET)
-    public String showDoctorView(@PathVariable("type") String type,
-                                 @PathVariable("id") int id,
-                                 ModelMap model) {
-        if(user !=null){
-            model.addAttribute("userInfo",user);
-            model.addAttribute("doctors", userRepo.findAllByType("doctor"));
-            model.addAttribute("sharePetInfo",new SharePetInfo(user.getTotalPets()));
-            return "doctorview";
-        }
-        return "redirect:/";
-    }
-    @RequestMapping(value = "/{type}/{userId}/doctors/{docId}/share",method = RequestMethod.POST)
-    public String sharePet(@PathVariable("type") String type,
-                           @PathVariable("userId") int userId,
-                           @PathVariable("docId") int docId,
-                           @ModelAttribute("sharePetInfo") SharePetInfo sharePetInfo,
-                           ModelMap model){
-        if(user != null) {
-            User doctor = userRepo.findUserById(docId);
-            for (Pet pet : user.getPets()) {
-                for (String id : sharePetInfo.getPetIds()) {
-                    if (id != null && pet.getId() == Integer.parseInt(id)) {
-                        pet.getUsers().add(doctor);
-                        doctor.getPets().add(pet);
-                    }
-                }
-            }
-            userRepo.save(doctor);
-            return "redirect:/"+type+"/"+userId+"/doctors";
-        }
-        return "redirect:/";
-    }
+
 }

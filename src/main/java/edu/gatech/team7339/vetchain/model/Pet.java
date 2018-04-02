@@ -12,7 +12,7 @@ public class Pet {
     @Column(name = "PET_ID")
     private int id;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(name = "USER_PET",
                 joinColumns = @JoinColumn(name = "PET_ID",referencedColumnName = "PET_ID"),
                 inverseJoinColumns = @JoinColumn(name = "USER_ID",referencedColumnName = "USER_ID")
@@ -46,7 +46,10 @@ public class Pet {
     private String avatarUrl;
 
     @Column(name ="DOB")
-    public String dob;
+    private String dob;
+
+    @OneToMany(mappedBy = "pet", cascade = CascadeType.ALL)
+    private Set<Appointment> schedule;
 
     public Pet(Set<User> users){
         this.users = users;

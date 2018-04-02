@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Client Home</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/sidebar.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/petview.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/fontawesome-all.min.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/static/css/bootstrap.min.css}">
+</head>
+<body>
+<!-- Sidebar/menu -->
+<div class="nav-side-menu">
+    <div class="brand">
+        <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
+        <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
+        <hr class="border border-success bg-success">
+    </div>
+    <i class="fas fa-bars fa-2x toggle-btn" aria-hidden="false" data-toggle="collapse" data-target="#menu-content"></i>
+    <div class="menu-list">
+        <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
+            <nav class="nav nav-pills flex-column">
+                <a class="nav-link sidebar-option message" th:href="@{'/doctor/'+${userInfo.getId()}}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
+                <a class="nav-link sidebar-option" th:href="@{'/doctor/'+${userInfo.getId()}+'/schedule'}"><span><i class="fas fa-calendar"></i></span> Schedule</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
+                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
+            </nav>
+        </div>
+    </div>
+</div>
+<!-- Main content -->
+<div class="container-fluid pl-4" id="main">
+    <!-- Header -->
+    <div class="row pt-1">
+        <div class="container-fluid">
+            <div class="row w-100">
+                <h4 class="pt-3"><b><i class="fas fa-paw"></i> My Pets</b></h4>
+                <button th:unless="${userInfo.getPets().isEmpty()}" class="btn btn-success btn-lg d-inline ml-auto" data-toggle="modal" data-target="#addPetModal"><i class="fa fa-plus"></i> Add Pet</button>
+            </div>
+            <hr class="border border-success bg-success">
+        </div>
+    </div>
+    <!-- No Pet message -->
+    <div class="row pt-1" th:if="${userInfo.getPets().isEmpty()}">
+        <div class="container-fluid">
+            <div class="w-100 pt-3 text-center"><h5>You don't have any pet right now <i class="far fa-meh fa-2x"></i></h5></div>
+            <div class="w-100 py-3 text-center">
+                <button class="btn btn-lg btn-success" data-toggle="modal" data-target="#addPetModal">Add Pet</button>
+            </div>
+        </div>
+    </div>
+    <!-- Add pet modal -->
+    <div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <form th:object="${petInfo}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/addPet}" method="post" enctype="multipart/form-data">
+                <div class="modal-header text-center">
+                    <h5 class="modal-title" id="addPetModalLabel"><strong>Add Pet</strong></h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="container">
+                        <!-- Name -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petName"><i class="fab fa-github-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{name}" placeholder="Name" aria-describedby="petName" required>
+                            </div>
+                        </div>
+                        <!-- Breed -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petBreed"><i class="fab fa-react"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{breed}" placeholder="Breed" aria-describedby="petBreed" required>
+                            </div>
+                        </div>
+                        <!-- Birthday -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petBirthday"><i class="fas fa-birthday-cake"></i></span>
+                                </div>
+                                <input class="form-control" type="date" th:field="*{dob}" placeholder="Birthday" aria-describedby="petBirthday" required>
+                            </div>
+                        </div>
+                        <!-- Weight -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petWeight"><i class="fas fa-tachometer-alt"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{weight}" placeholder="Weight" aria-describedby="petWeight" required>
+                                <div class="input-group-append">
+                                    <select class="custom-select ml-sm-2" name="unit">
+                                        <option value="lbs">lbs</option>
+                                        <option value="kg">kg</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Gender -->
+                        <div class="row mb-3">
+                            <label class="col-sm-2">Gender</label>
+                            <div class="col-m-10">
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="maleRadio" th:field="*{gender}" value="Male" checked>
+                                    <label class="form-check-label" for="maleRadio">Male <span><i class="fas fa-mars"></i></span></label>
+                                </div>
+                                <div class="form-check">
+                                    <input type="radio" class="form-check-input" id="femaleRadio" th:field="*{gender}" value="Female">
+                                    <label class="form-check-label" for="femaleRadio">Female <span><i class="fas fa-venus"></i></span></label>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- License -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petLicense"><i class="fas fa-id-card"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{license}" placeholder="License Number" aria-describedby="petLicense">
+                            </div>
+                        </div>
+                        <!-- Insurance Number -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petInsNum"><i class="fab fa-medrt"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{insNum}" placeholder="Insurance Number" aria-describedby="petInsNum">
+                            </div>
+                        </div>
+                        <!-- Insurance Carrier -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petInsCarrier"><i class="fas fa-ambulance"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{insCarrier}" placeholder="Insurance Carrier" aria-describedby="petInsCarrier">
+                            </div>
+                        </div>
+                        <!-- Microchip Number -->
+                        <div class="row mb-3">
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="petMicrochip"><i class="fas fa-microchip"></i></span>
+                                </div>
+                                <input class="form-control" type="text" th:field="*{microchip}" placeholder="Microchip Number" aria-describedby="petMicrochip">
+                            </div>
+                        </div>
+                        <!-- Avatar -->
+                        <div class="row mb-3">
+                            <div class="custom-file">
+                                <input type="file" accept="image/*" th:field="*{avatarUrl}" class="custom-file-input upload-file" id="avatarFileInput">
+                                <label class="custom-file-label" for="avatarFileInput">Upload your pet avatar...</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- Pet View -->
+    <div class="row pt-3" th:unless="${userInfo.getPets().isEmpty()}" th:each="pet : ${userInfo.getPets()}">
+        <div class="container bg-light">
+            <div class="row p-3 pet-card">
+                <!-- Biological Info -->
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="container-fluid">
+                            <div class="row">
+                                <!-- Pet's Avatar -->
+                                <div class="col-2">
+                                    <div class="row">
+                                        <img th:attr="src=${!pet.getAvatarUrl().isEmpty()}? ${pet.getAvatarUrl()}:'/static/images/animal1.png'"
+                                             class="border border-warning rounded img-fluid img-thumbnail">
+                                    </div>
+                                    <div class="row p-2">
+                                        <h4 class="font-weight-bold text-primary" th:text="${pet.getName()}"></h4>
+                                    </div>
+                                </div>
+                                <!-- Pet's Info -->
+                                <div class="col-10">
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <!-- Breed -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Breed</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getBreed()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Age -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Age</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getAge()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- DOB -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>D.O.B</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getDob()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Weight -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Weight</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getWeight()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Gender -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Gender</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getGender()}"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <!-- License -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Licence #</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getLicense()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Insurance Number -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Insurance #</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getInsuranceNum()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Insurance Carrier -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Insurance Carrier</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getInsuranceCarrier()}"></p>
+                                                    </div>
+                                                </div>
+                                                <!-- Micro Chip Number -->
+                                                <div class="row">
+                                                    <div class="col-5">
+                                                        <p><strong>Microchip #</strong></p>
+                                                    </div>
+                                                    <div class="col-7">
+                                                        <p th:text="${pet.getMicrochipNum()}"></p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Medical Info -->
+                <div class="container pt-2">
+                    <!-- General -->
+                    <div class="row px-1 pb-1">
+                        <button data-toggle="collapse" th:attr="data-target='#general'+${pet.getId()}" class="btn btn-block btn-secondary"><i class="fa fa-heartbeat fa-fw"></i><strong> General</strong></button>
+                        <div class="container collapse pt-3" th:id="${'general'+ pet.getId()}">
+                            <div class="row">
+                                <div class="container">
+                                    <div class="row">
+                                        <p class="col-2">Name:</p>
+                                        <p class="col-10" th:text="${pet.getName()}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-2">DoB:</p>
+                                        <p class="col-10" th:text="${pet.getDob()}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-2">Age:</p>
+                                        <p class="col-10" th:text="${pet.getAge()}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-2">Gender:</p>
+                                        <p class="col-10" th:text="${pet.getGender()}"></p>
+                                    </div>
+                                    <div class="row">
+                                        <p class="col-2">Breed:</p>
+                                        <p class="col-10" th:text="${pet.getBreed()}"></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Vaccine -->
+                    <div class="row px-1 pb-1">
+                        <button data-toggle="collapse" th:attr="data-target='#vacc'+${pet.getId()}" class="btn btn-block btn-secondary"><i class="fa fa-shield fa-fw"></i><strong> Vaccines</strong></button>
+                        <div class="container collapse pt-3" th:id="${'vacc'+pet.getId()}">
+                            <div class="card card-block">
+                                <p>Rabies Vaccine: 11/17/1995</p>
+                                <p>Booster Shots: 12/12/1212</p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Xray -->
+                    <div class="row pb-1 px-1">
+                        <button th:attr="data-target='#xray'+${pet.getId()}" data-toggle="collapse" class="btn btn-block btn-secondary"><i class="fa fa-plus-square"></i><strong> X-Rays</strong></button>
+                        <div class="container collapse pt-3" th:id="${'xray'+pet.getId()}">
+                            <div class="container">
+                                <!-- No Xray message -->
+                                <div class="row" th:if="${pet.getXrayUrls().isEmpty()}">
+                                    <div class="w-100 pt-3 text-center">
+                                        <h4 class="text-secondary">There's no xray <i class="far fa-meh fa-2x"></i></h4>
+                                    </div>
+                                    <div class="w-100 py-3 text-center">
+                                        <button class="btn btn-success btn-lg" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal">Add Xray</button>
+                                    </div>
+                                </div>
+                                <!-- Add Xray Button-->
+                                <div th:unless="${pet.getXrayUrls().isEmpty()}" class="row pb-3">
+                                    <button class="btn btn-success" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal"><i class="fa fa-plus"></i> Add Xray File</button>
+                                </div>
+                                <!-- View All Xrays -->
+                                <div class="row" th:unless="${pet.getXrayUrls().isEmpty()}" th:each="xray : ${pet.getXrayUrls()}">
+                                    <div class="container-fluid">
+                                        <div class="row pt-2 ">
+                                            <h5 th:text="'Upload date:'+${xray.getDate()}"></h5>
+                                            <a class="btn btn-success btn-sm d-inline ml-auto" th:href="@{${xray.getUrl()}}" role="button" download><i class="fa fa-angle-double-down" ></i> Download</a>
+                                        </div>
+                                        <div class="row pt-1">
+                                            <embed th:src="${!xray.getUrl().isEmpty()} ? ${xray.getUrl()}" type="application/pdf" class="w-100" height="500px">
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Add Xray Modal  -->
+                                <div class="modal fade" th:id="${'addXrayModal'+pet.getId()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='addXrayModalLabel'+${pet.getId()}" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <form class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/{id}/addXray(id=${pet.getId()})}" method="post" enctype="multipart/form-data">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" th:id="${'addXrayModalLabel'+pet.getId()}">Add Xray</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <div class="container">
+                                                    <div class="custom-file mb-3">
+                                                        <input type="file" accept="application/pdf" name="xrayFile" class="custom-file-input upload-file" id="XrayFile">
+                                                        <label class="custom-file-label" for="XrayFile">Choose your Xray...</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-primary">Add</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                                <!-- End Modal -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--  Script -->
+<script type="text/javascript" th:src="@{/static/js/jquery-3.3.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/nav_set_active.js}"></script>
+<script type="text/javascript" th:src="@{/static/js/bootstrap.bundle.min.js}"></script>
+<script>
+    $(".upload-file").change(function () {
+        var label = $(this).next();
+        var index = $(this).val().lastIndexOf("\\");
+        label.text($(this).val().substring(index+1));
+    });
+</script>
+</body>
+</html>

@@ -1,6 +1,7 @@
 package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
+import javax.print.Doc;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -12,6 +13,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID")
     private Integer id;
+
+    @Column(nullable = false, name = "FULL_NAME")
+    private String fullname;
 
     @Column(nullable = false, unique = true, name = "USER_NAME")
     private String username;
@@ -32,14 +36,21 @@ public class User {
     @Column(nullable = false, name = "DATE_CREATED")
     private Date dateCreated;
 
-    @ManyToMany(mappedBy = "users", fetch = FetchType.EAGER,cascade = {
+    @ManyToMany(mappedBy = "users",cascade = {
             CascadeType.PERSIST, CascadeType.MERGE})
     private Set<Pet> pets;
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "LAST_LOGIN")
+    private Date lastLogin;
+
+    @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    private Doctor doctor;
 
     public User(){
         this.type = "client";
     }
-    public User(String username, String password, String email, String phone) {
+    public User(String fullname, String username, String password, String email, String phone) {
         this.username = username;
         this.password = password;
         this.email = email;
@@ -47,6 +58,38 @@ public class User {
         this.type = "client";
         pets = new HashSet<>();
         dateCreated = new Date();
+        this.fullname = fullname;
+    }
+
+    public Doctor getDoctor() {
+        if(type.equals("doctor")){
+            return doctor;
+        }
+        else {
+            return null;
+        }
+    }
+
+    public void setDoctor(Doctor doctor) {
+        if(type.equals("doctor")) {
+            this.doctor = doctor;
+        }
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
+
+    public Date getLastLogin() {
+        return lastLogin;
+    }
+
+    public void setLastLogin(Date lastLogin) {
+        this.lastLogin = lastLogin;
     }
 
     public Date getCreatedDate() {

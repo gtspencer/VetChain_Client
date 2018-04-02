@@ -1,5 +1,6 @@
 package edu.gatech.team7339.vetchain.repository;
 
+import edu.gatech.team7339.vetchain.model.Pet;
 import edu.gatech.team7339.vetchain.model.User;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -14,4 +15,5 @@ public interface UserRepo extends CrudRepository<User,Long> {
     User findUserByUsername(String username);
     User findUserById(int id);
     Set<User> findAllByType(String type);
+    Set<User> findAllByPets(Pet pet);
 }

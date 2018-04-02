@@ -6,6 +6,24 @@ public class Register {
     private String email;
     private String phone;
     private String confirmPassword;
+    private String firstname;
+    private String lastname;
+
+    public String getFirstname() {
+        return firstname;
+    }
+
+    public String getLastname() {
+        return lastname;
+    }
+
+    public void setFirstname(String firstname) {
+        this.firstname = firstname;
+    }
+
+    public void setLastname(String lastname) {
+        this.lastname = lastname;
+    }
 
     public String getConfirmPassword() {
         return confirmPassword;

@@ -40,7 +40,6 @@
         <div class="container-fluid">
             <div class="row w-100">
                 <h4 class="pt-3"><b><i class="fas fa-paw"></i> My Pets</b></h4>
-                <button th:unless="${userInfo.getPets().isEmpty()}" class="btn btn-success btn-lg d-inline ml-auto" data-toggle="modal" data-target="#addPetModal"><i class="fa fa-plus"></i> Add Pet</button>
             </div>
             <hr class="border border-success bg-success">
         </div>
@@ -48,130 +47,10 @@
     <!-- No Pet message -->
     <div class="row pt-1" th:if="${userInfo.getPets().isEmpty()}">
         <div class="container-fluid">
-            <div class="w-100 pt-3 text-center"><h5>You don't have any pet right now <i class="far fa-meh fa-2x"></i></h5></div>
-            <div class="w-100 py-3 text-center">
-                <button class="btn btn-lg btn-success" data-toggle="modal" data-target="#addPetModal">Add Pet</button>
+            <div class="w-100 pt-3 text-center">
+                <p><h5>You don't have any pet right now.<i class="far fa-meh fa-2x"></i></h5></p>
+                <p><h5>Please contact your vet to add your pet(s) to the system.</h5></p>
             </div>
-        </div>
-    </div>
-    <!-- Add pet modal -->
-    <div class="modal fade" id="addPetModal" tabindex="-1" role="dialog" aria-labelledby="addPetModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <form th:object="${petInfo}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/addPet}" method="post" enctype="multipart/form-data">
-                <div class="modal-header text-center">
-                    <h5 class="modal-title" id="addPetModalLabel"><strong>Add Pet</strong></h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <div class="container">
-                        <!-- Name -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="petName"><i class="fab fa-github-alt"></i></span>
-                                </div>
-                                <input class="form-control" type="text" th:field="*{name}" placeholder="Name" aria-describedby="petName" required>
-                            </div>
-                        </div>
-                        <!-- Breed -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="petBreed"><i class="fab fa-react"></i></span>
-                                </div>
-                                <input class="form-control" type="text" th:field="*{breed}" placeholder="Breed" aria-describedby="petBreed" required>
-                            </div>
-                        </div>
-                        <!-- Birthday -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="petBirthday"><i class="fas fa-birthday-cake"></i></span>
-                                </div>
-                                <input class="form-control" type="date" th:field="*{dob}" placeholder="Birthday" aria-describedby="petBirthday" required>
-                            </div>
-                        </div>
-                        <!-- Weight -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="petWeight"><i class="fas fa-tachometer-alt"></i></span>
-                                </div>
-                                <input class="form-control" type="text" th:field="*{weight}" placeholder="Weight" aria-describedby="petWeight" required>
-                                <div class="input-group-append">
-                                    <select class="custom-select ml-sm-2" name="unit">
-                                        <option value="lbs">lbs</option>
-                                        <option value="kg">kg</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Gender -->
-                        <div class="row mb-3">
-                            <label class="col-sm-2">Gender</label>
-                            <div class="col-m-10">
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" id="maleRadio" name="gender" value="Male" checked>
-                                    <label class="form-check-label" for="maleRadio">Male <span><i class="fas fa-mars"></i></span></label>
-                                </div>
-                                <div class="form-check">
-                                    <input type="radio" class="form-check-input" id="femaleRadio" name="gender" value="Female">
-                                    <label class="form-check-label" for="femaleRadio">Female <span><i class="fas fa-venus"></i></span></label>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- License -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="petLicense"><i class="fas fa-id-card"></i></span>
-                            </div>
-                            <input class="form-control" type="text" th:field="*{license}" placeholder="License Number" aria-describedby="petLicense">
-                        </div>
-                        </div>
-                        <!-- Insurance Number -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="petInsNum"><i class="fab fa-medrt"></i></span>
-                            </div>
-                            <input class="form-control" type="text" th:field="*{insNum}" placeholder="Insurance Number" aria-describedby="petInsNum">
-                        </div>
-                        </div>
-                        <!-- Insurance Carrier -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="petInsCarrier"><i class="fas fa-ambulance"></i></span>
-                            </div>
-                            <input class="form-control" type="text" th:field="*{insCarrier}" placeholder="Insurance Carrier" aria-describedby="petInsCarrier">
-                        </div>
-                        </div>
-                        <!-- Microchip Number -->
-                        <div class="row mb-3">
-                            <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text" id="petMicrochip"><i class="fas fa-microchip"></i></span>
-                            </div>
-                            <input class="form-control" type="text" th:field="*{microchip}" placeholder="Microchip Number" aria-describedby="petMicrochip">
-                        </div>
-                        </div>
-                        <!-- Avatar -->
-                        <div class="row mb-3">
-                            <div class="custom-file">
-                            <input type="file" accept="image/*" th:field="*{avatarUrl}" class="custom-file-input upload-file" id="avatarFileInput">
-                            <label class="custom-file-label" for="avatarFileInput">Upload your pet avatar...</label>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Add</button>
-                </div>
-            </form>
         </div>
     </div>
     <!-- Pet View -->
@@ -345,10 +224,6 @@
                                         <button class="btn btn-success btn-lg" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal">Add Xray</button>
                                     </div>
                                 </div>
-                                <!-- Add Xray Button-->
-                                <div th:unless="${pet.getXrayUrls().isEmpty()}" class="row pb-3">
-                                    <button class="btn btn-success" th:attr="data-target='#addXrayModal'+${pet.getId()}" data-toggle="modal"><i class="fa fa-plus"></i> Add Xray File</button>
-                                </div>
                                 <!-- View All Xrays -->
                                 <div class="row" th:unless="${pet.getXrayUrls().isEmpty()}" th:each="xray : ${pet.getXrayUrls()}">
                                     <div class="container-fluid">
@@ -361,32 +236,6 @@
                                         </div>
                                     </div>
                                 </div>
-                                <!-- Add Xray Modal  -->
-                                <div class="modal fade" th:id="${'addXrayModal'+pet.getId()}" tabindex="-1" role="dialog" th:attr="aria-labelledby='addXrayModalLabel'+${pet.getId()}" aria-hidden="true">
-                                    <div class="modal-dialog" role="document">
-                                        <form class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/{id}/addXray(id=${pet.getId()})}" method="post" enctype="multipart/form-data">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" th:id="${'addXrayModalLabel'+pet.getId()}">Add Xray</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <div class="container">
-                                                    <div class="custom-file mb-3">
-                                                        <input type="file" accept="application/pdf" name="xrayFile" class="custom-file-input upload-file" id="XrayFile">
-                                                        <label class="custom-file-label" for="XrayFile">Choose your Xray...</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                                <button type="submit" class="btn btn-primary">Add</button>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                                <!-- End Modal -->
                             </div>
                         </div>
                     </div>
