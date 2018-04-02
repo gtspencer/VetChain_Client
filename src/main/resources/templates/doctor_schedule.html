@@ -59,7 +59,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="petName"><i class="fab fa-github-alt"></i></span>
                                             </div>
-                                            <select th:field="*{petId}" class="custom-select">
+                                            <select th:field="*{petId}" class="custom-select" title="pet name">
                                                 <option th:each="pet:${userInfo.getPets()}" th:value="${pet.getId()}" th:text="${pet.getName()}"></option>
                                             </select>
                                         </div>

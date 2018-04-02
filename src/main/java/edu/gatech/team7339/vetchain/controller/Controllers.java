@@ -3,7 +3,6 @@ package edu.gatech.team7339.vetchain.controller;
 import edu.gatech.team7339.vetchain.bindingObject.Login;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
 import edu.gatech.team7339.vetchain.bindingObject.Register;
-import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
 import edu.gatech.team7339.vetchain.blockchain.Block;
 import edu.gatech.team7339.vetchain.blockchain.BlockChain;
 import edu.gatech.team7339.vetchain.blockchain.BlockUtil;
@@ -15,25 +14,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import org.thymeleaf.expression.Lists;
 
 import javax.validation.Valid;
-import javax.xml.crypto.Data;
-import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Controller
@@ -99,8 +85,8 @@ public class Controllers {
 
         // TODO: Pull and read the blockchain file
 
-        for (int i = 0; i < blockchain.size(); i++) {
-            if (userHash.equals(blockchain.get(i).hash)) {
+        for (Block aBlockchain : blockchain) {
+            if (userHash.equals(aBlockchain.hash)) {
                 hashValid = true;
                 System.out.printf("Username and password in blockchain: %s\n", userHash);
             }

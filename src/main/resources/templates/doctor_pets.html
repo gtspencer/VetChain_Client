@@ -72,7 +72,7 @@
                                 <div class="input-group-prepend">
                                     <span class="input-group-text" id="petOwner"><i class="fas fa-user"></i></span>
                                 </div>
-                                <select th:field="*{ownerId}" class="custom-select">
+                                <select th:field="*{ownerId}" class="custom-select" title="owner username">
                                     <option th:each="client:${clients}" th:value="${client.getId()}" th:text="${client.getUsername()}"></option>
                                 </select>
                             </div>
@@ -112,7 +112,7 @@
                                 </div>
                                 <input class="form-control" type="text" th:field="*{weight}" placeholder="Weight" aria-describedby="petWeight" required>
                                 <div class="input-group-append">
-                                    <select class="custom-select ml-sm-2" name="unit">
+                                    <select class="custom-select ml-sm-2" title="unit" name="unit">
                                         <option value="lbs">lbs</option>
                                         <option value="kg">kg</option>
                                     </select>

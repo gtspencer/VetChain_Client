@@ -1,7 +1,5 @@
 package edu.gatech.team7339.vetchain.bindingObject;
 
-import java.util.Date;
-
 public class AppointmentInfo {
     private String petId;
     private String date;

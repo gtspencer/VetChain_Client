@@ -1,7 +1,6 @@
 package edu.gatech.team7339.vetchain.blockchain;
 
 import java.io.Serializable;
-import java.util.LinkedList;
 
 public class BlockUtil implements Serializable {
     public BlockUtil blockUtil;

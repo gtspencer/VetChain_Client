@@ -28,8 +28,8 @@
         <!-- Header -->
         <div class="row pt-5">
             <div class="w-50 mx-auto text-center">
-                <p><h1>VetChain</h1></p>
-                <p><h6>We do stuff with animals and blockchains.</h6></p>
+                <h1>VetChain</h1>
+                <h6>We do stuff with animals and blockchains.</h6>
             </div>
         </div>
         <!--Body -->
@@ -45,9 +45,9 @@
                             <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}" class="text-danger">Username does not exist</p>
                             <!-- username -->
                             <div class="input-group mb-3">
-                                <divam class="input-group-prepend">
+                                <div class="input-group-prepend">
                                     <span class="input-group-text" id="username-addon-log" aria-hidden="true"><i class="fas fa-user"></i></span>
-                                </divam>
+                                </div>
                                 <input type="text" th:classappend="${#fields.hasErrors('username')}? 'error'" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-log" required/>
                             </div>
                             <!-- password -->
@@ -87,7 +87,7 @@
                                         <div class="input-group-prepend">
                                             <span class="input-group-text" id="account-type-addon-reg" aria-hidden="true"><i class="fas fa-id-badge"></i></span>
                                         </div>
-                                        <select th:field="*{type}" class="form-control">
+                                        <select th:field="*{type}" class="form-control" title="user type">
                                             <option value="doctor">Doctor</option>
                                             <option value="client">Client</option>
                                         </select>

@@ -33,7 +33,7 @@ public class ClientControllers {
     @Autowired
     private AppointmentRepo appointmentRepo;
     @RequestMapping(value = "/client/{userId}",method = RequestMethod.GET)
-    public String showClientPage(ModelMap model){
+    public String showClientPage(ModelMap model, @PathVariable("userId") String userId){
         if(model.containsAttribute("userInfo")){
             user = (User) model.get("userInfo");
         } else if (user != null) {

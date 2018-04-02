@@ -1,7 +1,6 @@
 package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @Entity

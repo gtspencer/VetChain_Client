@@ -45,7 +45,7 @@
             <div class="row pb-1" th:unless="${doctors.isEmpty()}" th:each="doctor:${doctors}">
                 <button class="btn btn-block btn-large btn-secondary text-left" data-toggle="collapse" th:attr="data-target='#dr-info-'+${doctor.getId()}">
                     <img th:src="@{/static/images/doctor.jpg}" class="rounded-circle" width="35px">
-                    <h4 class="d-inline pl-5" th:text="' '+ ${doctor.getUsername()}"></h4>
+                    <span class="d-inline pl-5" th:text="' '+ ${doctor.getUsername()}"></span>
                 </button>
                 <div class="container pt-2 collapse" th:id="'dr-info-'+${doctor.getId()}">
                     <div class="row">
@@ -66,7 +66,7 @@
                                             <table class="table table-hover">
                                                 <tr th:each="pet, stat : ${userInfo.getPets()}">
                                                     <td>
-                                                        <input type="checkbox" th:field = "*{petIds[__${stat.index}__]}" th:value="${pet.getId()}">
+                                                        <input type="checkbox" th:title="${pet.getName()}" th:field = "*{petIds[__${stat.index}__]}" th:value="${pet.getId()}">
                                                     </td>
                                                     <td>
                                                         <img th:src="${pet.getAvatarUrl()}" class="img-thumbnail" height="50px" width="50px">

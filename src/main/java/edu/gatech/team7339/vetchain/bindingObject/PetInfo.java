@@ -2,8 +2,6 @@ package edu.gatech.team7339.vetchain.bindingObject;
 
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.NotNull;
-
 public class PetInfo {
     private int ownerId;
     private String name;

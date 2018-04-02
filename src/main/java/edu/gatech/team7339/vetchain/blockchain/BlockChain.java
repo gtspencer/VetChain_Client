@@ -1,6 +1,5 @@
 package edu.gatech.team7339.vetchain.blockchain;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.LinkedList;
 
 public class BlockChain implements Serializable {
@@ -8,7 +7,7 @@ public class BlockChain implements Serializable {
     LinkedList<Block> blockchain;
 
     public BlockChain() {
-        blockchain = new LinkedList<Block>();
+        blockchain = new LinkedList<>();
     }
 
     public void setChain(LinkedList<Block> chain) {

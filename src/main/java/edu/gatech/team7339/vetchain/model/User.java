@@ -1,9 +1,6 @@
 package edu.gatech.team7339.vetchain.model;
 
 import javax.persistence.*;
-import javax.print.Doc;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Entity
