@@ -5,6 +5,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotNull;
 
 public class PetInfo {
+    private int ownerId;
     private String name;
     private String dob;
     private String weight;
@@ -15,6 +16,14 @@ public class PetInfo {
     private String breed;
     private MultipartFile avatarUrl;
     private String gender;
+
+    public int getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(int ownerId) {
+        this.ownerId = ownerId;
+    }
 
     public String getGender() {
         return gender;

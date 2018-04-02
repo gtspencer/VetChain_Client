@@ -13,6 +13,7 @@ public class Doctor {
 
     @OneToOne
     @JoinColumn(name = "USER_ID")
+    @MapsId
     private User user;
 
     @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL)

@@ -72,13 +72,28 @@
                             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Password</p>
                             <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Username</p>
                             <!-- username -->
-                            <div class="input-group mb-3">
-                                <div class="input-group-prepend">
-                                    <span class="input-group-text" id="username-addon-reg" aria-hidden="true"><i class="fas fa-user"></i></span>
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="username-addon-reg" aria-hidden="true"><i class="fas fa-user"></i></span>
+                                        </div>
+                                        <input type="text" id="reg_username" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-reg" required/>
+                                    </div>
+                                    <p id="username-error"></p>
                                 </div>
-                                <input type="text" id="reg_username" th:field="*{username}" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="username-addon-reg" required/>
+                                <div class="col-4">
+                                    <div class="input-group mb-3">
+                                        <div class="input-group-prepend">
+                                            <span class="input-group-text" id="account-type-addon-reg" aria-hidden="true"><i class="fas fa-id-badge"></i></span>
+                                        </div>
+                                        <select th:field="*{type}" class="form-control">
+                                            <option value="doctor">Doctor</option>
+                                            <option value="client">Client</option>
+                                        </select>
+                                    </div>
+                                </div>
                             </div>
-                            <p id="username-error"></p>
                             <!-- password -->
                             <div class="input-group mb-3">
                                 <div class="input-group-prepend">

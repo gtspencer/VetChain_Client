@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +34,8 @@ public class DoctorControllers {
     private PetRepo petRepo;
     @Autowired
     private AppointmentRepo appointmentRepo;
+    @Autowired
+    private UserRepo userRepo;
 
     @RequestMapping(value = "/doctor/{userId}", method = RequestMethod.GET)
     public String showDoctorHome(@PathVariable("userId") String id,
@@ -54,6 +57,7 @@ public class DoctorControllers {
                 pet.setMedRecordUrls(petMedRecordRepo.findPetMedRecordsByPetId(pet.getId()));
                 pet.setXrayUrls(petXrayUrlRepo.findPetXrayUrlsByPetId(pet.getId()));
             }
+            model.addAttribute("clients", userRepo.findAllByType("client"));
             model.addAttribute("userInfo",user);
             model.addAttribute("petInfo",new PetInfo());
             return "doctor_pets";
@@ -66,7 +70,6 @@ public class DoctorControllers {
         if(user != null){
             Date begin = new Date();
             Date end = new Date(begin.getTime() + 604800000);
-            Set<Appointment> appointmentSet = appointmentRepo.findAllByDoctorIdAndDateBetweenOrderByTimeAsc(user.getDoctor().getId(),begin,end);
             ArrayList<ArrayList<String>> next7Days = new ArrayList<>();
             ArrayList<String> day = new ArrayList<>();
             day.add("#");
@@ -82,40 +85,43 @@ public class DoctorControllers {
                 day.add((calendar.get(Calendar.MONTH)+1) + "/" + calendar.get(Calendar.DAY_OF_MONTH));
                 next7Days.add(day);
             }
-            ArrayList<ArrayList<ArrayList<String>>> schedule = new ArrayList<>();
-            ArrayList<ArrayList<String>> appointments = new ArrayList<>();
-            for (int i = 0 ; i < 9; i++){
-                appointments.add(new ArrayList<>());
-            }
-            String meetingTime="NaN";
-            for(Appointment p : appointmentSet){
-                if(meetingTime.equals("NaN")){
-                    appointments.get(0).add(0, p.getTime().toString());
-                    meetingTime = p.getTime().toString();
-                } else if(!meetingTime.equalsIgnoreCase(p.getTime().toString())) {
-                    schedule.add(appointments);
-                    appointments = new ArrayList<>();
-                    for(int i = 0; i < 9; i++){
-                        appointments.add(new ArrayList<>());
-                    }
-                    appointments.get(0).add(0, p.getTime().toString());
+            if(appointmentRepo.existsByDoctorIdAndDateBetween(user.getDoctor().getId(),begin,end)) {
+                Set<Appointment> appointmentSet = appointmentRepo.findAllByDoctorIdAndDateBetweenOrderByTimeAsc(user.getDoctor().getId(), begin, end);
+                ArrayList<ArrayList<ArrayList<String>>> schedule = new ArrayList<>();
+                ArrayList<ArrayList<String>> appointments = new ArrayList<>();
+                for (int i = 0; i < 9; i++) {
+                    appointments.add(new ArrayList<>());
                 }
+                String meetingTime = "NaN";
+                for (Appointment p : appointmentSet) {
+                    if (meetingTime.equals("NaN")) {
+                        appointments.get(0).add(0, p.getTime().toString());
+                        meetingTime = p.getTime().toString();
+                    } else if (!meetingTime.equalsIgnoreCase(p.getTime().toString())) {
+                        schedule.add(appointments);
+                        appointments = new ArrayList<>();
+                        for (int i = 0; i < 9; i++) {
+                            appointments.add(new ArrayList<>());
+                        }
+                        appointments.get(0).add(0, p.getTime().toString());
+                    }
                     int index = 0;
-                    for(ArrayList<String> d : next7Days){
-                        if(d.contains(p.getDayOfWeek())){
+                    for (ArrayList<String> d : next7Days) {
+                        if (d.contains(p.getDayOfWeek())) {
                             break;
                         }
                         index++;
                     }
                     ArrayList<String> appointmentDetails = new ArrayList<>();
                     appointmentDetails.add("Pet: " + p.getPet().getName());
-                    appointmentDetails.add("Reason: " +p.getReason());
+                    appointmentDetails.add("Reason: " + p.getReason());
                     appointments.add(index, appointmentDetails);
+                }
+                schedule.add(appointments);
+                model.addAttribute("schedule",schedule);
             }
-            schedule.add(appointments);
             model.addAttribute("daysOfWeek",next7Days);
             model.addAttribute("userInfo",user);
-            model.addAttribute("schedule",schedule);
             model.addAttribute("AppointmentInfo",new AppointmentInfo());
             return "doctor_schedule";
         }
@@ -130,6 +136,7 @@ public class DoctorControllers {
         if(user != null) {
             Pet pet = new Pet();
             pet.getUsers().add(user);
+            pet.getUsers().add(userRepo.findUserById(petInfo.getOwnerId()));
             pet.setName(petInfo.getName());
             pet.setBreed(petInfo.getBreed());
             pet.setGender(petInfo.getGender());

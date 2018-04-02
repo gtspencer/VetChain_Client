@@ -40,9 +40,9 @@
         <div class="container-fluid w-100">
             <div class="row w-100">
                 <h4>Schedule</h4>
-                <button class="btn btn-success btn-lg d-inline ml-auto" data-toggle="modal" data-target="#addAppointmentModal"><i class="fas fa-calendar-plus"></i> Create Appointment</button>
+                <button th:unless="${userInfo.getPets().isEmpty()}" class="btn btn-success btn-lg d-inline ml-auto" data-toggle="modal" data-target="#addAppointmentModal"><i class="fas fa-calendar-plus"></i> Create Appointment</button>
                 <!-- Create Appointment Modal-->
-                <div class="modal fade" id="addAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="addAppointmentModalLabel" aria-hidden="true">
+                <div th:unless="${userInfo.getPets().isEmpty()}" class="modal fade" id="addAppointmentModal" tabindex="-1" role="dialog" aria-labelledby="addAppointmentModalLabel" aria-hidden="true">
                     <div class="modal-dialog" role="document">
                         <form th:object="${AppointmentInfo}" class="modal-content" th:action="@{__${#httpServletRequest.requestURI}__/addAppointment}" method="post">
                             <div class="modal-header text-center">
@@ -59,7 +59,7 @@
                                             <div class="input-group-prepend">
                                                 <span class="input-group-text" id="petName"><i class="fab fa-github-alt"></i></span>
                                             </div>
-                                            <select th:field="*{petId}">
+                                            <select th:field="*{petId}" class="custom-select">
                                                 <option th:each="pet:${userInfo.getPets()}" th:value="${pet.getId()}" th:text="${pet.getName()}"></option>
                                             </select>
                                         </div>
@@ -115,7 +115,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="week:${schedule}">
+                <tr th:each="week:${schedule}" th:if="${schedule} != null">
                     <td>
                         <!--/*/ <th:block th:each = "details : ${week.get(0)}"> /*/-->
                         <div th:text="${details}"></div>

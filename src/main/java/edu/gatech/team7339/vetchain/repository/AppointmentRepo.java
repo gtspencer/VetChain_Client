@@ -12,4 +12,5 @@ public interface AppointmentRepo extends CrudRepository<Appointment,Long> {
     Set<Appointment> findAllByDoctorId(int docId);
     Set<Appointment> findAllByDoctorIdAndDateBetweenOrderByTimeAsc(int docId, Date begin, Date end);
     Set<Appointment> findAllByPetIdAndDateBetweenOrderByTimeAsc(int petId,Date begin,Date end);
+    boolean existsByDoctorIdAndDateBetween(int docId, Date begin, Date end);
 }

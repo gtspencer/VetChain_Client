@@ -105,7 +105,6 @@ public class Controllers {
                 System.out.printf("Username and password in blockchain: %s\n", userHash);
             }
         }
-
         if (hashValid) {
             loginValidator.validate(login,result);
             if(!result.hasErrors()) {
@@ -159,7 +158,6 @@ public class Controllers {
         if(user != null) {
             return "redirect:/";//Fix this later
         } else {
-
             registerValidator.validate(reg,result);
             if(result.hasErrors()) {
                 redirect.addFlashAttribute("org.springframework.BindingResult.regInfo",result);
@@ -173,7 +171,7 @@ public class Controllers {
                 blockchain.add(new Block((reg.getUsername() + reg.getPassword()), blockchain.get(blockchain.size()-1).hash));
                 // TODO: Save the blockchain to a file
 
-                userRepo.save(new User(reg.getFirstname()+" "+ reg.getLastname(),reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone()));
+                userRepo.save(new User(reg.getFirstname()+" "+ reg.getLastname(),reg.getUsername(), reg.getPassword(), reg.getEmail(), reg.getPhone(),reg.getType()));
 
                 backupBlockchain(blockchain);
             }

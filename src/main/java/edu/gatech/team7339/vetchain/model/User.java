@@ -50,12 +50,16 @@ public class User {
     public User(){
         this.type = "client";
     }
-    public User(String fullname, String username, String password, String email, String phone) {
+    public User(String fullname, String username, String password, String email, String phone, String type) {
         this.username = username;
         this.password = password;
         this.email = email;
         this.phone = phone;
-        this.type = "client";
+        this.type = type;
+        if(type.equals("doctor")){
+            doctor = new Doctor();
+            doctor.setUser(this);
+        }
         pets = new HashSet<>();
         dateCreated = new Date();
         this.fullname = fullname;
