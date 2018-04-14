@@ -23,6 +23,7 @@ public class VetchainApplication implements WebMvcConfigurer {
         registry.addResourceHandler("/**").addResourceLocations(CLASSPATH_RESOURCE_LOCATIONS);
         registry.addResourceHandler("/images/**").addResourceLocations("file:///C:/files/");
     }
+    /*
 	private class TomCatConfig {
 
 	    @Bean
@@ -47,7 +48,7 @@ public class VetchainApplication implements WebMvcConfigurer {
             return tomcat;
         }
     }
-
+*/
 	public static void main(String[] args) {
 		SpringApplication.run(VetchainApplication.class, args);
 	}
