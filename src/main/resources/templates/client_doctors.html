@@ -17,6 +17,7 @@
     <div class="brand">
         <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
         <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <p th:text="'Last login: ' + ${userInfo.getLastLogin()}"></p>
         <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
         <hr class="border border-success bg-sucess">
     </div>
@@ -24,10 +25,11 @@
     <div class="menu-list">
         <div class="nav-wrapper menu-content collapse out" role="navigation" id="menu-content">
             <nav class="nav nav-pills flex-column">
-                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
-                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/pets(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
+                <a class="nav-link sidebar-option" th:href="@{'/client/'+${userInfo.getId()}}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
+                <a class="nav-link sidebar-option" th:href="@{'/client/'+${userInfo.getId()}+'/pets'}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
                 <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fas fa-user-md"></i></span> Doctor</a>
-                <a class="nav-link sidebar-option" th:href="@{/{type}/{id}/search(type=${userInfo.getType()}, id=${userInfo.getId()})}"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" th:href="@{'/client/'+${userInfo.getId()}+'/history'}"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" th:href="@{'/client/'+${userInfo.getId()}+'/search'}"><span><i class="fas fa-search"></i> Search</span></a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
             </nav>
@@ -37,8 +39,13 @@
 <!-- Main content -->
 <div class="container-fluid pl-4 bg-light" id="main">
     <!-- Overview header -->
-    <div class="row pt-5">
-        <h5><b><i class="fas fa-user-md"></i> My Doctors</b></h5>
+    <div class="row pt-1">
+        <div class="container-fluid">
+            <div class="row w-100">
+                <h4 class="pt-3"><b><i class="fas fa-user-md"></i> Doctors</b></h4>
+            </div>
+            <hr class="border border-success bg-success">
+        </div>
     </div>
     <div class="row p-3 doctor-card">
         <div class="container">
@@ -63,7 +70,7 @@
                                     </div>
                                     <div class="modal-body">
                                         <div class="container">
-                                            <table class="table table-hover">
+                                            <table class="table table-hover table-striped">
                                                 <tr th:each="pet, stat : ${userInfo.getPets()}">
                                                     <td>
                                                         <input type="checkbox" th:title="${pet.getName()}" th:field = "*{petIds[__${stat.index}__]}" th:value="${pet.getId()}">

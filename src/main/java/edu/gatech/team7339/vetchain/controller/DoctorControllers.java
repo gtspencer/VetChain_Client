@@ -2,10 +2,7 @@ package edu.gatech.team7339.vetchain.controller;
 
 import edu.gatech.team7339.vetchain.bindingObject.AppointmentInfo;
 import edu.gatech.team7339.vetchain.bindingObject.PetInfo;
-import edu.gatech.team7339.vetchain.model.Appointment;
-import edu.gatech.team7339.vetchain.model.Pet;
-import edu.gatech.team7339.vetchain.model.PetXrayUrl;
-import edu.gatech.team7339.vetchain.model.User;
+import edu.gatech.team7339.vetchain.model.*;
 import edu.gatech.team7339.vetchain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -35,6 +32,8 @@ public class DoctorControllers {
     private AppointmentRepo appointmentRepo;
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private RecentActivityRepo recentActivityRepo;
 
     @RequestMapping(value = "/doctor/{userId}", method = RequestMethod.GET)
     public String showDoctorHome(@PathVariable("userId") String id,
@@ -159,7 +158,9 @@ public class DoctorControllers {
                     pet.setAvatarUrl("/static/images/avatar.png");
                 }
                 petRepo.save(pet);
+                RecentActivity newActivity = new RecentActivity(user, new Date(),"Add new pet:"+pet.getName());
                 user.getPets().add(pet);
+                recentActivityRepo.save(newActivity);
             }
             return "redirect:/doctor/" + userId + "/pets";
         }
@@ -201,6 +202,8 @@ public class DoctorControllers {
                     pet.getXrayUrls().add(xray);
                     petXrayUrlRepo.save(xray);
                     petRepo.save(pet);
+                    RecentActivity newActivity = new RecentActivity(user, new Date(),"Add new Xray:"+name+" to Pet:"+pet.getName());
+                    recentActivityRepo.save(newActivity);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -224,6 +227,8 @@ public class DoctorControllers {
                 appointment.setPet(petRepo.findPetById(Integer.parseInt(newAppointment.getPetId())));
                 appointment.setReason(newAppointment.getReason());
                 appointmentRepo.save(appointment);
+                RecentActivity newActivity = new RecentActivity(user, new Date(),"Create a new Appointment");
+                recentActivityRepo.save(newActivity);
                 return "redirect:/doctor/" + docId + "/schedule";
             }catch (ParseException e){
                 System.out.println("Parse failed!");
@@ -232,5 +237,17 @@ public class DoctorControllers {
         } else {
             return "error_page";
         }
+    }
+    @RequestMapping(value = "/doctor/{id}/history", method = RequestMethod.GET)
+    public String showHistory(@PathVariable("id") int userid,
+                       ModelMap model) {
+        Set<RecentActivity> activities = recentActivityRepo.findAllByUserId(userid);
+        if(activities != null) {
+            user.setActivities(activities);
+        } else {
+            user.setActivities(new HashSet<>());
+        }
+        model.addAttribute("userInfo",user);
+        return "doctor_history";
     }
 }

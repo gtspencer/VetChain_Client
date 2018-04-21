@@ -16,6 +16,7 @@
     <div class="brand">
         <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
         <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <p th:text="'Last login: ' + ${userInfo.getLastLogin()}"></p>
         <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
         <hr class="border border-success bg-success">
     </div>
@@ -26,7 +27,7 @@
                 <a class="nav-link sidebar-option message" th:href="@{'/doctor/'+${userInfo.getId()}}"><span><i class="fas fa-user-circle"></i></span> Overview</a>
                 <a class="nav-link sidebar-option active" th:href="@{__${#httpServletRequest.requestURI}__}"><span><i class="fab fa-github-alt"></i></span> Pets</a>
                 <a class="nav-link sidebar-option" th:href="@{'/doctor/'+${userInfo.getId()}+'/schedule'}"><span><i class="fas fa-calendar"></i></span> Schedule</a>
-                <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-history"></i></span> History</a>
+                <a class="nav-link sidebar-option" th:href="@{'/doctor/'+${userInfo.getId()}+'/history'}"><span><i class="fas fa-history"></i></span> History</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="far fa-newspaper"></i></span> News</a>
                 <a class="nav-link sidebar-option" href="#"><span><i class="fas fa-cog"></i></span> Settings</a>
             </nav>
@@ -45,8 +46,14 @@
             <hr class="border border-success bg-success">
         </div>
     </div>
+    <!-- No client message-->
+    <div class="row pt-1" th:if="${clients.isEmpty()}">
+        <div class="container-fluid">
+            <div class="w-100 pt-3 text-center"><h5>You have no client right now <i class="far fa-meh fa-2x"></i></h5></div>
+        </div>
+    </div>
     <!-- No Pet message -->
-    <div class="row pt-1" th:if="${userInfo.getPets().isEmpty()}">
+    <div class="row pt-1" th:if="${userInfo.getPets().isEmpty() && !clients.isEmpty()}">
         <div class="container-fluid">
             <div class="w-100 pt-3 text-center"><h5>You don't have any pet right now <i class="far fa-meh fa-2x"></i></h5></div>
             <div class="w-100 py-3 text-center">

@@ -16,6 +16,7 @@
     <div class="brand">
         <img th:src="@{/static/images/stewie.png}" class="rounded-circle" height="60px" width="60px"/><br>
         <span>Welcome! <strong th:text="${userInfo.getUsername()}"></strong></span><br>
+        <p th:text="'Last login: ' + ${userInfo.getLastLogin()}"></p>
         <a th:href="@{/logout}" class="logout"><i class="fa fa-sign-out"></i> Logout</a>
         <hr class="border border-success bg-sucess">
     </div>

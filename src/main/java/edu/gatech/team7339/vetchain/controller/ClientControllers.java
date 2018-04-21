@@ -3,11 +3,9 @@ package edu.gatech.team7339.vetchain.controller;
 import edu.gatech.team7339.vetchain.bindingObject.SharePetInfo;
 import edu.gatech.team7339.vetchain.model.Appointment;
 import edu.gatech.team7339.vetchain.model.Pet;
+import edu.gatech.team7339.vetchain.model.RecentActivity;
 import edu.gatech.team7339.vetchain.model.User;
-import edu.gatech.team7339.vetchain.repository.AppointmentRepo;
-import edu.gatech.team7339.vetchain.repository.PetMedRecordRepo;
-import edu.gatech.team7339.vetchain.repository.PetXrayUrlRepo;
-import edu.gatech.team7339.vetchain.repository.UserRepo;
+import edu.gatech.team7339.vetchain.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -32,6 +30,8 @@ public class ClientControllers {
     private UserRepo userRepo;
     @Autowired
     private AppointmentRepo appointmentRepo;
+    @Autowired
+    private RecentActivityRepo recentActivityRepo;
     @RequestMapping(value = "/client/{userId}",method = RequestMethod.GET)
     public String showClientPage(ModelMap model, @PathVariable("userId") String userId){
         if(model.containsAttribute("userInfo")){
@@ -106,19 +106,42 @@ public class ClientControllers {
                            @PathVariable("docId") int docId,
                            @ModelAttribute("sharePetInfo") SharePetInfo sharePetInfo,
                            ModelMap model){
+        boolean fshare = true;
         if(user != null) {
             User doctor = userRepo.findUserById(docId);
             for (Pet pet : user.getPets()) {
                 for (String id : sharePetInfo.getPetIds()) {
                     if (id != null && pet.getId() == Integer.parseInt(id)) {
-                        pet.getUsers().add(doctor);
-                        doctor.getPets().add(pet);
+                        for(User u : pet.getUsers()){
+                            if(u.getId() == docId) {
+                                fshare = false;
+                                break;
+                            }
+                        }
+                        if(fshare) {
+                            pet.getUsers().add(doctor);
+                            doctor.getPets().add(pet);
+                        }
                     }
                 }
             }
             userRepo.save(doctor);
+            RecentActivity newActivity = new RecentActivity(user, new Date(),"Share pets with doctor:"+doctor.getFullname());
+            recentActivityRepo.save(newActivity);
             return "redirect:/client/"+userId+"/doctors";
         }
         return "error_page";
+    }
+    @RequestMapping(value = "/client/{id}/history", method = RequestMethod.GET)
+    public String showHistory(@PathVariable("id") int userid,
+                       ModelMap model) {
+        Set<RecentActivity> activities = recentActivityRepo.findAllByUserId(userid);
+        if(activities != null){
+            user.setActivities(activities);
+        } else {
+            user.setActivities(new HashSet<>());
+        }
+        model.addAttribute("userInfo",user);
+        return "client_history";
     }
 }

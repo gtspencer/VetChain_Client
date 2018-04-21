@@ -24,7 +24,8 @@ import java.util.*;
 
 @Controller
 public class Controllers {
-    public BlockUtil blockUtil = new BlockUtil();
+    private BlockUtil blockUtil = new BlockUtil();
+    private Date lastLogin;
     private static LinkedList<Block> blockchain = new LinkedList<>();
 
 
@@ -94,11 +95,11 @@ public class Controllers {
         if (hashValid) {
             loginValidator.validate(login,result);
             if(!result.hasErrors()) {
-
                 user = userRepo.findUserByUsernameAndPassword(login.getUsername(), login.getPassword());
                 user.setPets(petRepo.findAllByUsers(user));
+                lastLogin = new Date();
                 if (user.getLastLogin() == null) {
-                    user.setLastLogin(new Date());
+                    user.setLastLogin(lastLogin);
                 }
                 redirect.addFlashAttribute("userInfo", user);
                 return "redirect:/" + user.getType() + "/" + user.getId();
@@ -182,6 +183,7 @@ public class Controllers {
      */
     @RequestMapping("/logout")
     public String logout(ModelMap model) {
+        user.setLastLogin(lastLogin);
         userRepo.save(user);
         user= null;
         return "redirect:/";

@@ -44,8 +44,23 @@ public class User {
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
     private Doctor doctor;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<RecentActivity> activities;
+
+    public Set<RecentActivity> getActivities() {
+        return activities;
+    }
+
+    public void setActivities(Set<RecentActivity> activities) {
+        this.activities = activities;
+    }
+
+
     public User(){
         this.type = "client";
+        pets = new HashSet<>();
+        activities = new HashSet<>();
+        dateCreated = new Date();
     }
     public User(String fullname, String username, String password, String email, String phone, String type) {
         this.username = username;
@@ -59,6 +74,7 @@ public class User {
         }
         pets = new HashSet<>();
         dateCreated = new Date();
+        activities = new HashSet<>();
         this.fullname = fullname;
     }
 
